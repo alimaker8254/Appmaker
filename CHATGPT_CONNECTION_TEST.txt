@@ -1,0 +1,2 @@
+Temporary ChatGPT-GitHub connection test.
+Created to verify repository write access; safe to delete.
