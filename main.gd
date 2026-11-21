@@ -69,8 +69,8 @@ func _process(delta: float) -> void:
 			queue_redraw()
 
 func _draw() -> void:
-	var scale_factor := min(size.x / DESIGN.x, size.y / DESIGN.y)
-	var offset := (size - DESIGN * scale_factor) * 0.5
+	var scale_factor: float = minf(size.x / DESIGN.x, size.y / DESIGN.y)
+	var offset: Vector2 = (size - DESIGN * scale_factor) * 0.5
 	draw_set_transform(offset, 0.0, Vector2.ONE * scale_factor)
 	_draw_background()
 	if screen == "select":
@@ -165,7 +165,7 @@ func _draw_select() -> void:
 		_panel(rect, Color("#061638"), Color("#00d9ff") if chosen else Color("#0879ee"), 4 if chosen else 3)
 		_club_badge(i, rect.position + Vector2(card_w * .5, 77), 52)
 		_panel(Rect2(rect.position.x + 7, rect.position.y + 145, card_w - 14, 43), Color("#07142d"), Color("#008cff"), 2)
-		var label := CLUBS[i].name
+		var label: String = CLUBS[i].name
 		_text(label, Vector2(rect.position.x + card_w * .5, rect.position.y + 175), 20 if label.length() > 17 else 23, Color.WHITE, HORIZONTAL_ALIGNMENT_CENTER)
 		if chosen:
 			draw_circle(rect.position + Vector2(card_w - 18, 17), 10, Color("#53ff24"))
@@ -238,8 +238,8 @@ func _draw_settings() -> void:
 	_text("↶   بازگشت", Vector2(800, 802), 43, Color.WHITE, HORIZONTAL_ALIGNMENT_CENTER)
 
 func _point(event_position: Vector2) -> Vector2:
-	var scale_factor := min(size.x / DESIGN.x, size.y / DESIGN.y)
-	var offset := (size - DESIGN * scale_factor) * 0.5
+	var scale_factor: float = minf(size.x / DESIGN.x, size.y / DESIGN.y)
+	var offset: Vector2 = (size - DESIGN * scale_factor) * 0.5
 	return (event_position - offset) / scale_factor
 
 func _gui_input(event: InputEvent) -> void:
