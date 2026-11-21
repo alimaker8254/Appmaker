@@ -12,18 +12,42 @@ jobs:
     runs-on: ubuntu-latest
     container:
       image: barichello/godot-ci:4.4.1
+    env:
+      ANDROID_HOME: /usr/lib/android-sdk
+      JAVA_HOME: /usr/lib/jvm/java-17-openjdk-amd64
     steps:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Create build folder
-        run: mkdir -p football-manager/build
+      - name: Install Java and Android export prerequisites
+        run: |
+          apt-get update
+          apt-get install -y openjdk-17-jdk unzip curl
+          echo "JAVA_HOME=/usr/lib/jvm/java-17-openjdk-amd64" >> "$GITHUB_ENV"
+          echo "ANDROID_HOME=/usr/lib/android-sdk" >> "$GITHUB_ENV"
+          java -version
+          test -d "$ANDROID_HOME"
+
+      - name: Install matching Godot export templates
+        run: |
+          mkdir -p "$HOME/.local/share/godot/export_templates/4.4.1.stable"
+          curl -L --fail --retry 3             "https://github.com/godotengine/godot/releases/download/4.4.1-stable/Godot_v4.4.1-stable_export_templates.tpz"             -o /tmp/godot-templates.tpz
+          unzip -q /tmp/godot-templates.tpz -d /tmp/godot-templates
+          cp /tmp/godot-templates/templates/* "$HOME/.local/share/godot/export_templates/4.4.1.stable/"
+          test -f "$HOME/.local/share/godot/export_templates/4.4.1.stable/android_debug.apk"
+          test -f "$HOME/.local/share/godot/export_templates/4.4.1.stable/android_release.apk"
+
+      - name: Create debug signing key
+        run: |
+          keytool -genkeypair -v             -keystore /tmp/football-manager-debug.keystore             -storepass android             -alias androiddebugkey             -keypass android             -keyalg RSA -keysize 2048 -validity 10000             -dname "CN=Android Debug,O=Android,C=US"
 
       - name: Validate project
         run: godot --headless --path football-manager --editor --quit
 
       - name: Export Android APK
-        run: godot --headless --path football-manager --export-debug "Android" football-manager/build/FootballClubManager.apk
+        run: |
+          godot --headless --path football-manager             --export-debug "Android" football-manager/build/FootballClubManager.apk
+          test -s football-manager/build/FootballClubManager.apk
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
