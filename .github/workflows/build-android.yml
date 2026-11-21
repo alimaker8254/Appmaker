@@ -85,8 +85,8 @@ jobs:
           echo "Android tools:"
           "$ANDROID_HOME/platform-tools/adb" version
           "$ANDROID_HOME/ndk/23.2.8568313/ndk-build" --version
-          godot --verbose --headless --path football-manager --export-debug "Android" football-manager/build/FootballClubManager.apk
-          test -s football-manager/build/FootballClubManager.apk
+          godot --verbose --headless --path football-manager --export-debug "Android" "$GITHUB_WORKSPACE/football-manager/build/FootballClubManager.apk"
+          test -s "$GITHUB_WORKSPACE/football-manager/build/FootballClubManager.apk"
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
