@@ -77,7 +77,14 @@ jobs:
 
       - name: Export Android APK
         run: |
-          godot --headless --path football-manager             --export-debug "Android" football-manager/build/FootballClubManager.apk
+          echo "Installed Android NDK:"
+          ls -la "$ANDROID_HOME/ndk"
+          echo "Installed CMake:"
+          ls -la "$ANDROID_HOME/cmake"
+          echo "Android tools:"
+          "$ANDROID_HOME/platform-tools/adb" version
+          "$ANDROID_HOME/ndk/23.2.8568313/ndk-build" --version
+          godot --verbose --headless --path football-manager --export-debug "Android" football-manager/build/FootballClubManager.apk
           test -s football-manager/build/FootballClubManager.apk
 
       - name: Upload APK
