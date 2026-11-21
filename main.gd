@@ -491,6 +491,9 @@ func _show_toast(message: String) -> void:
 
 
 func _on_action(action: String) -> void:
+	if action.begins_with("select_"):
+		_on_club_selected(int(action.trim_prefix("select_")))
+		return
 	if action in ["home", "squad", "matches", "finances", "tactics", "settings"]:
 		page = action
 	elif action == "music_up":
