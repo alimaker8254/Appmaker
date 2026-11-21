@@ -72,6 +72,15 @@ jobs:
           godot --headless --verbose --path . --export-debug "Android" build/football-manager-debug.apk
           test -s build/football-manager-debug.apk
 
+      - name: Verify APK package and signature
+        run: |
+          set -eux
+          APK="build/football-manager-debug.apk"
+          "$ANDROID_HOME/build-tools/35.0.0/apksigner" verify --verbose --print-certs "$APK"
+          "$ANDROID_HOME/build-tools/35.0.0/aapt" dump badging "$APK" | tee build/apk-badging.txt
+          grep -q "package: name='com.alimaker.footballmanager'" build/apk-badging.txt
+          unzip -t "$APK" | tail -n 2
+
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
