@@ -15,6 +15,16 @@ jobs:
           channel: stable
       - run: flutter create --platforms=android --project-name appmaker .
       - run: flutter pub get
+      - name: Convert club crests to PNG for reliable Android rendering
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y librsvg2-bin
+          mkdir -p assets/logos_png
+          for file in assets/logos/*.svg; do
+            [ -f "$file" ] || continue
+            name=$(basename "$file" .svg)
+            rsvg-convert --width 512 --height 512 "$file" --output "assets/logos_png/$name.png"
+          done
       - run: flutter build apk --release --target-platform android-arm64
       - uses: actions/upload-artifact@v4
         with:
