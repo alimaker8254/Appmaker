@@ -94,7 +94,7 @@ class DashboardTile extends StatelessWidget {
   const DashboardTile({super.key,required this.card});
   @override
   Widget build(BuildContext context)=>Container(decoration:BoxDecoration(gradient:LinearGradient(begin:Alignment.topCenter,end:Alignment.bottomCenter,colors:card.gradient),borderRadius:BorderRadius.circular(20),border:Border.all(color:card.color,width:2),boxShadow:AppTheme.glow(card.color)),child:Stack(children:[
-    Center(child:Column(mainAxisSize:MainAxisSize.min,children:[Expanded(child:Padding(padding:const EdgeInsets.fromLTRB(12,12,12,0),child:card.graphic)),Text(card.fa,style:AppTheme.vazir(size:20,weight:FontWeight.bold),maxLines:1,overflow:TextOverflow.scaleDown),Text(card.en,style:AppTheme.vazir(size:14,color:AppTheme.textSecondary),maxLines:1),const SizedBox(height:8)])),
+    Center(child:Column(children:[Expanded(child:Padding(padding:const EdgeInsets.fromLTRB(12,12,12,0),child:card.graphic)),Text(card.fa,style:AppTheme.vazir(size:20,weight:FontWeight.bold),maxLines:1,overflow:TextOverflow.ellipsis),Text(card.en,style:AppTheme.vazir(size:14,color:AppTheme.textSecondary),maxLines:1),const SizedBox(height:8)])),
     Positioned(left:10,bottom:10,child:CircleAvatar(radius:20,backgroundColor:card.color,child:const Icon(Icons.arrow_back_ios,color:Colors.black,size:17))),
   ]));
 }
