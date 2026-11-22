@@ -338,9 +338,9 @@ class LeagueGraphic extends StatelessWidget {
       );
     } else if (logo != null) {
       crest = Image.asset('assets/logos_png/$logo', width: 11, height: 11, fit: BoxFit.contain,
-        errorBuilder: (_, __, ___) => const SizedBox(width: 15, height: 15));
+        errorBuilder: (_, __, ___) => const SizedBox(width: 11, height: 11));
     } else {
-      crest = const SizedBox(width: 15, height: 15);
+      crest = const SizedBox(width: 11, height: 11);
     }
     return Container(
       color: highlight ? AppTheme.neonGreen.withOpacity(.16) : Colors.transparent,
