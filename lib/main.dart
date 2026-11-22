@@ -3,11 +3,38 @@ import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'app_theme.dart';
 
-void main() async {
+void main() {
   WidgetsFlutterBinding.ensureInitialized();
-  await SystemChrome.setPreferredOrientations([DeviceOrientation.landscapeLeft, DeviceOrientation.landscapeRight]);
-  await SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky);
+
+  // Start Flutter before applying optional Android system-UI settings.
+  // A platform-channel failure must never prevent the app from opening.
+  FlutterError.onError = (details) {
+    FlutterError.presentError(details);
+    debugPrint('APPMAKER_FLUTTER_ERROR: ${details.exceptionAsString()}');
+    debugPrintStack(stackTrace: details.stack);
+  };
+
   runApp(const AppmakerApp());
+  _configureSystemUi();
+}
+
+Future<void> _configureSystemUi() async {
+  try {
+    await SystemChrome.setPreferredOrientations([
+      DeviceOrientation.landscapeLeft,
+      DeviceOrientation.landscapeRight,
+    ]);
+  } catch (error, stackTrace) {
+    debugPrint('APPMAKER_ORIENTATION_ERROR: $error');
+    debugPrintStack(stackTrace: stackTrace);
+  }
+
+  try {
+    await SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky);
+  } catch (error, stackTrace) {
+    debugPrint('APPMAKER_SYSTEM_UI_ERROR: $error');
+    debugPrintStack(stackTrace: stackTrace);
+  }
 }
 
 class AppmakerApp extends StatelessWidget {
