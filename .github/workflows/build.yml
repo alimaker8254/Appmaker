@@ -20,6 +20,8 @@ jobs:
           channel: stable
       - name: Generate Android wrapper
         run: flutter create --platforms=android --project-name football_manager --org com.example .
+      - name: Align Gradle wrapper with Android Gradle Plugin
+        run: sed -i 's/gradle-7\.6\.3-all\.zip/gradle-8.4-all.zip/' android/gradle/wrapper/gradle-wrapper.properties
       - run: flutter pub get
       - run: flutter build apk --release
       - uses: actions/upload-artifact@v4
