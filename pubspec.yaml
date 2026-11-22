@@ -19,3 +19,7 @@ flutter:
   assets:
     - assets/logos/
     - assets/logos_png/
+  fonts:
+    - family: Vazirmatn
+      fonts:
+        - asset: assets/fonts/Vazirmatn-Regular.ttf
