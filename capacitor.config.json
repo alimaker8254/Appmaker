@@ -1,0 +1,11 @@
+{
+  "appId": "com.example.footballgame",
+  "appName": "Football Game",
+  "webDir": ".",
+  "server": {
+    "androidScheme": "https"
+  },
+  "android": {
+    "orientation": "landscape"
+  }
+}
