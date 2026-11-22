@@ -43,7 +43,7 @@ class AppmakerApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) => MaterialApp(
     debugShowCheckedModeBanner: false,
-    theme: ThemeData.dark().copyWith(scaffoldBackgroundColor: AppTheme.bgDark),
+    theme: ThemeData.dark().copyWith(scaffoldBackgroundColor: AppTheme.bgDark, fontFamily: 'Vazirmatn'),
     builder: (context, child) => Directionality(textDirection: TextDirection.rtl, child: child ?? const SizedBox()),
     home: const TeamSelectionScreen(),
   );
