@@ -67,8 +67,8 @@ class _TeamSelectionScreenState extends State<TeamSelectionScreen> {
     return Scaffold(body: LayoutBuilder(builder: (context, c) => Stack(children: [
       Positioned.fill(child: Container(decoration: const BoxDecoration(gradient: LinearGradient(begin: Alignment.topCenter,end: Alignment.bottomCenter,colors:[AppTheme.bgDark,Color(0xFF0A1428)])),child: CustomPaint(painter: DiagonalPainter(AppTheme.neonBlue,.08)))),
       Column(children: [
-        Padding(padding: const EdgeInsets.only(top:20,bottom:10),child: Container(width:c.maxWidth*.6,height:65,decoration:BoxDecoration(borderRadius:BorderRadius.circular(40),border:Border.all(color:AppTheme.neonBlue,width:2),boxShadow:AppTheme.glow(AppTheme.neonBlue)),alignment:Alignment.center,child:Text('لطفا یک تیم را انتخاب کنید',style:AppTheme.vazir(size:28,weight:FontWeight.bold).copyWith(shadows:[Shadow(color:AppTheme.neonBlue,blurRadius:14)])))),
-        Expanded(child: GridView.builder(padding:const EdgeInsets.symmetric(horizontal:15,vertical:10),physics:const NeverScrollableScrollPhysics(),gridDelegate:const SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount:5,mainAxisSpacing:8,crossAxisSpacing:8,childAspectRatio:1.55),itemCount:clubs.length,itemBuilder:(context,i){
+        Padding(padding: const EdgeInsets.only(top:8,bottom:6),child: Container(width:c.maxWidth*.6,height:48,decoration:BoxDecoration(borderRadius:BorderRadius.circular(40),border:Border.all(color:AppTheme.neonBlue,width:2),boxShadow:AppTheme.glow(AppTheme.neonBlue)),alignment:Alignment.center,child:Text('لطفا یک تیم را انتخاب کنید',style:AppTheme.vazir(size:28,weight:FontWeight.bold).copyWith(shadows:[Shadow(color:AppTheme.neonBlue,blurRadius:14)])))),
+        Expanded(child: GridView.builder(padding:const EdgeInsets.symmetric(horizontal:15,vertical:10),physics:const NeverScrollableScrollPhysics(),gridDelegate:const SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount:8,mainAxisSpacing:7,crossAxisSpacing:7,childAspectRatio:1.45),itemCount:clubs.length,itemBuilder:(context,i){
           final club=clubs[i]; return GestureDetector(onTap:()=>setState(()=>selected=i),child:Container(decoration:BoxDecoration(gradient:const LinearGradient(colors:[AppTheme.bgDark,AppTheme.bgCardBlue]),borderRadius:BorderRadius.circular(16),border:Border.all(color:selected==i?AppTheme.neonGold:AppTheme.neonBlue,width:selected==i?3:1.5),boxShadow:AppTheme.glow(selected==i?AppTheme.neonGold:AppTheme.neonBlue,strong:selected==i)),child:Column(children:[
             Expanded(child:Padding(padding:const EdgeInsets.all(8),child:club.networkLogo!=null?Image.network(club.networkLogo!,fit:BoxFit.contain,errorBuilder:(context,error,stackTrace)=>const SizedBox.shrink()):Image.asset('assets/logos_png/${club.asset.replaceAll('.svg', '.png')}',fit:BoxFit.contain,errorBuilder:(context,error,stackTrace)=>const SizedBox.shrink()))),
             Container(height:35,width:double.infinity,decoration:const BoxDecoration(color:AppTheme.bgDark,borderRadius:BorderRadius.vertical(bottom:Radius.circular(15))),alignment:Alignment.center,child:FittedBox(fit:BoxFit.scaleDown,child:Text(club.name,style:AppTheme.vazir(size:13)))),
@@ -84,3 +84,20 @@ class _TeamSelectionScreenState extends State<TeamSelectionScreen> {
   }
 }
 
+
+class DiagonalPainter extends CustomPainter {
+  final Color color;
+  final double opacity;
+  final bool texture;
+  DiagonalPainter(this.color, this.opacity, {this.texture = false});
+  @override
+  void paint(Canvas canvas, Size size) {
+    final paint = Paint()..color = color.withOpacity(opacity)..strokeWidth = 1;
+    for (var x = -size.height; x < size.width; x += 55) {
+      canvas.drawLine(Offset(x.toDouble(), 0), Offset(x + size.height, size.height), paint);
+    }
+  }
+  @override
+  bool shouldRepaint(covariant DiagonalPainter oldDelegate) =>
+      oldDelegate.color != color || oldDelegate.opacity != opacity || oldDelegate.texture != texture;
+}
