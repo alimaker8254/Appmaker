@@ -1,7 +1,7 @@
 {
   "appId": "com.example.footballgame",
   "appName": "Football Game",
-  "www": ".",
+  "webDir": "www",
   "server": {
     "androidScheme": "https"
   },
