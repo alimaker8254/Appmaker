@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'app_theme.dart';
 
 void main() async {
@@ -25,9 +26,9 @@ class Club {
   const Club(this.name, this.asset);
 }
 const clubs = [
-  Club('منچسترسیتی','manchester_city.png'), Club('لیورپول','liverpool.png'), Club('آرسنال','arsenal.png'), Club('منچستریونایتد','manchester_united.png'), Club('چلسی','chelsea.png'),
-  Club('تاتنهام','tottenham.png'), Club('نیوکاسل','newcastle.png'), Club('استون ویلا','aston_villa.png'), Club('وستهم','west_ham.png'), Club('اورتون','everton.png'),
-  Club('برایتون','brighton.png'), Club('ناتینگهام فارست','nottingham_forest.png'), Club('بارسلونا','barcelona.png'), Club('رئال مادرید','real_madrid.png'), Club('اتلتیکو مادرید','atletico_madrid.png'),
+  Club('منچسترسیتی','manchester_city.svg'), Club('لیورپول','liverpool.svg'), Club('آرسنال','arsenal.svg'), Club('منچستریونایتد','manchester_united.svg'), Club('چلسی','chelsea.svg'),
+  Club('تاتنهام','tottenham.svg'), Club('نیوکاسل','newcastle.svg'), Club('استون ویلا','aston_villa.svg'), Club('وستهم','west_ham.svg'), Club('اورتون','everton.svg'),
+  Club('برایتون','brighton.svg'), Club('ناتینگهام فارست','nottingham_forest.svg'), Club('بارسلونا','barcelona.svg'), Club('رئال مادرید','real_madrid.svg'), Club('اتلتیکو مادرید','atletico_madrid.svg'),
 ];
 
 class TeamSelectionScreen extends StatefulWidget {
@@ -45,7 +46,7 @@ class _TeamSelectionScreenState extends State<TeamSelectionScreen> {
         Padding(padding: const EdgeInsets.only(top:20,bottom:10),child: Container(width:c.maxWidth*.6,height:65,decoration:BoxDecoration(borderRadius:BorderRadius.circular(40),border:Border.all(color:AppTheme.neonBlue,width:2),boxShadow:AppTheme.glow(AppTheme.neonBlue)),alignment:Alignment.center,child:Text('لطفا یک تیم را انتخاب کنید',style:AppTheme.vazir(size:28,weight:FontWeight.bold).copyWith(shadows:[Shadow(color:AppTheme.neonBlue,blurRadius:14)])))),
         Expanded(child: GridView.builder(padding:const EdgeInsets.symmetric(horizontal:15,vertical:10),gridDelegate:const SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount:5,mainAxisSpacing:12,crossAxisSpacing:12,childAspectRatio:1.55),itemCount:clubs.length,itemBuilder:(context,i){
           final club=clubs[i]; return GestureDetector(onTap:()=>setState(()=>selected=i),child:Container(decoration:BoxDecoration(gradient:const LinearGradient(colors:[AppTheme.bgDark,AppTheme.bgCardBlue]),borderRadius:BorderRadius.circular(16),border:Border.all(color:selected==i?AppTheme.neonGold:AppTheme.neonBlue,width:selected==i?3:1.5),boxShadow:AppTheme.glow(selected==i?AppTheme.neonGold:AppTheme.neonBlue,strong:selected==i)),child:Column(children:[
-            Expanded(child:Padding(padding:const EdgeInsets.all(10),child:Image.asset('assets/logos/${club.asset}',fit:BoxFit.contain))),
+            Expanded(child:Padding(padding:const EdgeInsets.all(10),child:SvgPicture.asset('assets/logos/${club.asset}',fit:BoxFit.contain))),
             Container(height:35,width:double.infinity,decoration:const BoxDecoration(color:AppTheme.bgDark,borderRadius:BorderRadius.vertical(bottom:Radius.circular(15))),alignment:Alignment.center,child:FittedBox(fit:BoxFit.scaleDown,child:Text(club.name,style:AppTheme.vazir(size:13)))),
           ])));
         })),
@@ -124,7 +125,7 @@ class LeagueGraphic extends StatelessWidget {
     Row(mainAxisAlignment:MainAxisAlignment.center,children:[const Icon(Icons.emoji_events,color:AppTheme.neonGold,size:23),Text(' جدول لیگ',style:AppTheme.vazir(size:13,weight:FontWeight.bold))]),
     const SizedBox(height:4),_leagueRow('رتبه','تیم','امتیاز',true),_leagueRow('1','رئال مادرید','32'),_leagueRow('2','بارسلونا','31'),Container(color:AppTheme.neonGreen.withOpacity(.18),child:_leagueRow('3','باشگاه من','33')),_leagueRow('4','اتلتیکو','28'),_leagueRow('5','سویا','26')
   ]);
-  Widget _leagueRow(String a,String b,String d,[bool header=false])=>Padding(padding:const EdgeInsets.symmetric(vertical:1,horizontal:5),child:Row(children:[Expanded(child:Text(a,style:AppTheme.vazir(size:header?9:10,weight:header?FontWeight.bold:FontWeight.normal),textAlign:TextAlign.center)),Expanded(flex:3,child:header?Text(b,style:AppTheme.vazir(size:9),textAlign:TextAlign.center):Row(mainAxisAlignment:MainAxisAlignment.center,children:[if(b=='رئال مادرید')Image.asset('assets/logos/real_madrid.png',width:14,height:14,fit:BoxFit.contain),if(b=='بارسلونا')Image.asset('assets/logos/barcelona.png',width:14,height:14,fit:BoxFit.contain),if(b=='اتلتیکو')Image.asset('assets/logos/atletico_madrid.png',width:14,height:14,fit:BoxFit.contain),if(b=='سویا')Image.asset('assets/logos/sevilla.png',width:14,height:14,fit:BoxFit.contain),Flexible(child:Text(b,style:AppTheme.vazir(size:10),textAlign:TextAlign.center,maxLines:1,overflow:TextOverflow.ellipsis))])),Expanded(child:Text(d,style:AppTheme.vazir(size:header?9:10),textAlign:TextAlign.center))]));
+  Widget _leagueRow(String a,String b,String d,[bool header=false])=>Padding(padding:const EdgeInsets.symmetric(vertical:1,horizontal:5),child:Row(children:[Expanded(child:Text(a,style:AppTheme.vazir(size:header?9:10,weight:header?FontWeight.bold:FontWeight.normal),textAlign:TextAlign.center)),Expanded(flex:3,child:header?Text(b,style:AppTheme.vazir(size:9),textAlign:TextAlign.center):Row(mainAxisAlignment:MainAxisAlignment.center,children:[if(b=='رئال مادرید')SvgPicture.asset('assets/logos/real_madrid.svg',width:14,height:14,fit:BoxFit.contain),if(b=='بارسلونا')SvgPicture.asset('assets/logos/barcelona.svg',width:14,height:14,fit:BoxFit.contain),if(b=='اتلتیکو')SvgPicture.asset('assets/logos/atletico_madrid.svg',width:14,height:14,fit:BoxFit.contain),if(b=='سویا')SvgPicture.asset('assets/logos/sevilla.svg',width:14,height:14,fit:BoxFit.contain),Flexible(child:Text(b,style:AppTheme.vazir(size:10),textAlign:TextAlign.center,maxLines:1,overflow:TextOverflow.ellipsis))])),Expanded(child:Text(d,style:AppTheme.vazir(size:header?9:10),textAlign:TextAlign.center))]));
 }
 class PlayerGraphic extends StatelessWidget {
   final bool upgrade; const PlayerGraphic({super.key,this.upgrade=false});
