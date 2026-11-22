@@ -311,11 +311,11 @@ class LeagueGraphic extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-          const Icon(Icons.emoji_events, color: AppTheme.neonGold, size: 18),
-          const SizedBox(width: 5),
-          Text('LEAGUE TABLE', style: AppTheme.vazir(size: 10, weight: FontWeight.bold)),
+          const Icon(Icons.emoji_events, color: AppTheme.neonGold, size: 13),
+          const SizedBox(width: 3),
+          Text('LEAGUE TABLE', style: AppTheme.vazir(size: 7, weight: FontWeight.bold)),
         ]),
-        const SizedBox(height: 3),
+        const SizedBox(height: 1),
         _row('#', 'CLUB', 'PTS', header: true),
         _row('1', 'Real Madrid', '32', logo: 'real_madrid.png'),
         _row('2', 'Barcelona', '31', logo: 'barcelona.png'),
@@ -333,31 +333,31 @@ class LeagueGraphic extends StatelessWidget {
     if (network) {
       crest = Image.network(
         'https://www.footylogos.com/downloads/logo/sevilla-fc-logo-footylogos.png',
-        width: 15, height: 15, fit: BoxFit.contain,
-        errorBuilder: (_, __, ___) => const SizedBox(width: 15, height: 15),
+        width: 11, height: 11, fit: BoxFit.contain,
+        errorBuilder: (_, __, ___) => const SizedBox(width: 11, height: 11),
       );
     } else if (logo != null) {
-      crest = Image.asset('assets/logos_png/$logo', width: 15, height: 15, fit: BoxFit.contain,
+      crest = Image.asset('assets/logos_png/$logo', width: 11, height: 11, fit: BoxFit.contain,
         errorBuilder: (_, __, ___) => const SizedBox(width: 15, height: 15));
     } else {
       crest = const SizedBox(width: 15, height: 15);
     }
     return Container(
       color: highlight ? AppTheme.neonGreen.withOpacity(.16) : Colors.transparent,
-      padding: const EdgeInsets.symmetric(horizontal: 3, vertical: 2),
+      padding: const EdgeInsets.symmetric(horizontal: 2, vertical: 0),
       child: Row(children: [
         Expanded(flex: 1, child: Text(rank, textAlign: TextAlign.center,
-          style: AppTheme.vazir(size: header ? 8 : 9, weight: header ? FontWeight.bold : FontWeight.normal))),
+          style: AppTheme.vazir(size: header ? 7 : 8, weight: header ? FontWeight.bold : FontWeight.normal))),
         Expanded(flex: 5, child: header
           ? Text(name, textAlign: TextAlign.center, style: AppTheme.vazir(size: 8, weight: FontWeight.bold))
           : Row(children: [
               crest,
-              const SizedBox(width: 3),
+              const SizedBox(width: 2),
               Expanded(child: Text(name, maxLines: 1, overflow: TextOverflow.ellipsis,
-                style: AppTheme.vazir(size: 9, weight: highlight ? FontWeight.bold : FontWeight.normal))),
+                style: AppTheme.vazir(size: 8, weight: highlight ? FontWeight.bold : FontWeight.normal))),
             ])),
         Expanded(flex: 1, child: Text(points, textAlign: TextAlign.center,
-          style: AppTheme.vazir(size: header ? 8 : 9))),
+          style: AppTheme.vazir(size: header ? 7 : 8))),
       ]),
     );
   }
