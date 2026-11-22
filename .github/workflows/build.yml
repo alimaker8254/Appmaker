@@ -13,6 +13,7 @@ jobs:
         distribution: 'temurin'
         java-version: '17'
     - run: npm install
+    - run: mkdir -p www && cp *.html *.js *.css www/
     - run: npx cap add android
     - run: npx cap sync android
     - run: cd android && chmod +x gradlew && ./gradlew assembleDebug
