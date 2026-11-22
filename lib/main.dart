@@ -49,7 +49,7 @@ class _TeamSelectionScreenState extends State<TeamSelectionScreen> {
             Container(height:35,width:double.infinity,decoration:const BoxDecoration(color:AppTheme.bgDark,borderRadius:BorderRadius.vertical(bottom:Radius.circular(15))),alignment:Alignment.center,child:FittedBox(fit:BoxFit.scaleDown,child:Text(club.name,style:AppTheme.vazir(size:13)))),
           ])));
         })),
-        Align(alignment:Alignment.bottomLeft,child:Padding(padding:const EdgeInsets.only(left:20,bottom:12),child:SizedBox(width:200,height:55,child:OutlinedButton(
+        Align(alignment:Alignment.bottomRight,child:Padding(padding:const EdgeInsets.only(left:20,bottom:12),child:SizedBox(width:200,height:55,child:OutlinedButton(
           style:OutlinedButton.styleFrom(side:const BorderSide(color:AppTheme.neonBlue,width:2),shape:RoundedRectangleBorder(borderRadius:BorderRadius.circular(30)),shadowColor:AppTheme.neonBlue,elevation:10),
           onPressed:selected<0?null:()=>Navigator.push(context,MaterialPageRoute(builder:(_)=>HomeScreen(club:clubs[selected]))),
           child:Row(mainAxisAlignment:MainAxisAlignment.center,children:[const Icon(Icons.check,color:Colors.white,size:28),const SizedBox(width:10),Text('تأیید',style:AppTheme.vazir(size:22,weight:FontWeight.bold))]),
@@ -124,7 +124,7 @@ class LeagueGraphic extends StatelessWidget {
     Row(mainAxisAlignment:MainAxisAlignment.center,children:[const Icon(Icons.emoji_events,color:AppTheme.neonGold,size:23),Text(' جدول لیگ',style:AppTheme.vazir(size:13,weight:FontWeight.bold))]),
     const SizedBox(height:4),_leagueRow('رتبه','تیم','امتیاز',true),_leagueRow('1','رئال مادرید','32'),_leagueRow('2','بارسلونا','31'),Container(color:AppTheme.neonGreen.withOpacity(.18),child:_leagueRow('3','باشگاه من','33')),_leagueRow('4','اتلتیکو','28'),_leagueRow('5','سویا','26')
   ]);
-  Widget _leagueRow(String a,String b,String d,[bool header=false])=>Padding(padding:const EdgeInsets.symmetric(vertical:1,horizontal:5),child:Row(children:[Expanded(child:Text(a,style:AppTheme.vazir(size:header?9:10,weight:header?FontWeight.bold:FontWeight.normal),textAlign:TextAlign.center)),Expanded(flex:3,child:Text(b,style:AppTheme.vazir(size:header?9:10),textAlign:TextAlign.center,maxLines:1)),Expanded(child:Text(d,style:AppTheme.vazir(size:header?9:10),textAlign:TextAlign.center))]));
+  Widget _leagueRow(String a,String b,String d,[bool header=false])=>Padding(padding:const EdgeInsets.symmetric(vertical:1,horizontal:5),child:Row(children:[Expanded(child:Text(a,style:AppTheme.vazir(size:header?9:10,weight:header?FontWeight.bold:FontWeight.normal),textAlign:TextAlign.center)),Expanded(flex:3,child:header?Text(b,style:AppTheme.vazir(size:9),textAlign:TextAlign.center):Row(mainAxisAlignment:MainAxisAlignment.center,children:[if(b=='رئال مادرید')Image.asset('assets/logos/real_madrid.png',width:14,height:14,fit:BoxFit.contain),if(b=='بارسلونا')Image.asset('assets/logos/barcelona.png',width:14,height:14,fit:BoxFit.contain),if(b=='اتلتیکو')Image.asset('assets/logos/atletico_madrid.png',width:14,height:14,fit:BoxFit.contain),if(b=='سویا')Image.asset('assets/logos/sevilla.png',width:14,height:14,fit:BoxFit.contain),Flexible(child:Text(b,style:AppTheme.vazir(size:10),textAlign:TextAlign.center,maxLines:1,overflow:TextOverflow.ellipsis))])),Expanded(child:Text(d,style:AppTheme.vazir(size:header?9:10),textAlign:TextAlign.center))]));
 }
 class PlayerGraphic extends StatelessWidget {
   final bool upgrade; const PlayerGraphic({super.key,this.upgrade=false});
