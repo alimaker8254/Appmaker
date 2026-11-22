@@ -40,18 +40,18 @@ class HomeScreen extends StatelessWidget {
                 padding: EdgeInsets.symmetric(horizontal: screen.width * .01, vertical: compact ? 4 : 7),
                 child: Column(
                   children: [
-                    SizedBox(height: compact ? 60 : 72, child: _TopBar(club: club, compact: compact)),
-                    SizedBox(height: compact ? 7 : 12),
+                    SizedBox(height: compact ? 66 : 72, child: _TopBar(club: club, compact: compact)),
+                    const SizedBox(height: 12),
                     Expanded(
                       child: Column(
                         children: [
                           for (int r = 0; r < 2; r++) ...[
-                            if (r == 1) SizedBox(height: compact ? 9 : 15),
+                            if (r == 1) const SizedBox(height: 15),
                             Expanded(
                               child: Row(
                                 children: [
                                   for (int c = 0; c < 3; c++) ...[
-                                    if (c != 0) SizedBox(width: compact ? 9 : 15),
+                                    if (c != 0) const SizedBox(width: 15),
                                     Expanded(child: _DashboardCard(data: cards[r * 3 + c], compact: compact)),
                                   ],
                                 ],
@@ -79,8 +79,7 @@ class _TopBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final logo = club.networkLogo ??
-        'https://upload.wikimedia.org/wikipedia/en/c/cc/Chelsea_FC.svg';
+    final logo = club.networkLogo;
     return Center(
       child: FractionallySizedBox(
         widthFactor: .98,
@@ -97,8 +96,10 @@ class _TopBar extends StatelessWidget {
             children: [
               SizedBox(
                 width: compact ? 34 : 43, height: compact ? 40 : 50,
-                child: ClipOval(child: Image.network(logo, fit: BoxFit.contain,
-                  errorBuilder: (_, __, ___) => const SizedBox.shrink())),
+                child: ClipOval(child: logo != null
+                  ? Image.network(logo, fit: BoxFit.contain, errorBuilder: (_, __, ___) => const SizedBox.shrink())
+                  : Image.asset('assets/logos_png/\${club.asset.replaceAll('.svg', '.png')}', fit: BoxFit.contain,
+                      errorBuilder: (_, __, ___) => const SizedBox.shrink())),
               ),
               SizedBox(width: compact ? 5 : 9),
               Column(mainAxisAlignment: MainAxisAlignment.center, crossAxisAlignment: CrossAxisAlignment.start, children: [
