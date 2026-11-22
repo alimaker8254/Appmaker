@@ -98,7 +98,7 @@ class _TopBar extends StatelessWidget {
                 width: compact ? 34 : 43, height: compact ? 40 : 50,
                 child: ClipOval(child: logo != null
                   ? Image.network(logo, fit: BoxFit.contain, errorBuilder: (_, __, ___) => const SizedBox.shrink())
-                  : Image.asset('assets/logos_png/\${club.asset.replaceAll('.svg', '.png')}', fit: BoxFit.contain,
+                  : Image.asset('assets/logos_png/${club.asset.replaceAll('.svg', '.png')}', fit: BoxFit.contain,
                       errorBuilder: (_, __, ___) => const SizedBox.shrink())),
               ),
               SizedBox(width: compact ? 5 : 9),
