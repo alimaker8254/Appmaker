@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 class AppTheme {
   static const bgDark = Color(0xFF050B14);
@@ -13,7 +12,7 @@ class AppTheme {
   static const textSecondary = Color(0xFFB0C4DE);
 
   static TextStyle vazir({double size = 14, FontWeight weight = FontWeight.normal, Color color = textWhite}) =>
-      GoogleFonts.vazirmatn(fontSize: size, fontWeight: weight, color: color);
+      TextStyle(fontFamily: 'sans-serif', fontSize: size, fontWeight: weight, color: color);
 
   static List<BoxShadow> glow(Color color, {bool strong = false}) => [
     BoxShadow(color: color.withOpacity(strong ? .95 : .8), blurRadius: strong ? 16 : 10, spreadRadius: strong ? 2 : 1),
