@@ -78,7 +78,7 @@ class HomeScreen extends StatelessWidget {
         Row(children:[Container(width:60,height:60,decoration:BoxDecoration(shape:BoxShape.circle,border:Border.all(color:AppTheme.neonGold,width:2)),child:const Icon(Icons.sports_soccer,color:AppTheme.neonGold,size:34)),const SizedBox(width:10),Column(mainAxisAlignment:MainAxisAlignment.center,crossAxisAlignment:CrossAxisAlignment.start,children:[Text(club.name,style:AppTheme.vazir(size:20,weight:FontWeight.bold)),Text('My Club',style:AppTheme.vazir(size:12,color:AppTheme.textSecondary))])]),
         Row(children:[Text('Lv. 12',style:AppTheme.vazir(size:18)),const SizedBox(width:10),Container(width:150,height:16,decoration:BoxDecoration(borderRadius:BorderRadius.circular(12),border:Border.all(color:AppTheme.neonBlue)),child:Align(alignment:Alignment.centerRight,child:FractionallySizedBox(widthFactor:.6,child:Container(decoration:BoxDecoration(color:AppTheme.neonGold,borderRadius:BorderRadius.circular(12),boxShadow:AppTheme.glow(AppTheme.neonGold))))))]),
         Row(children:[_pill(Icons.monetization_on,'250,000',AppTheme.neonGold),const SizedBox(width:8),_pill(Icons.diamond,'3 LP',AppTheme.neonPurple),const SizedBox(width:12),const Icon(Icons.settings,color:AppTheme.neonBlue,size:30)]),
-      ]),
+      ])),
       const SizedBox(height:15),
       Expanded(child:GridView.count(crossAxisCount:3,childAspectRatio:1.1,mainAxisSpacing:15,crossAxisSpacing:15,children:cards.map((e)=>DashboardTile(card:e)).toList())),
     ])))));
