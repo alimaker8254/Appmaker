@@ -19,5 +19,12 @@ android {
         versionCode 1
         versionName "1.0.0"
     }
+    buildTypes {
+        release {
+            // Sign the sideloadable release APK with the generated debug key.
+            // Replace this with a private upload key before publishing to a store.
+            signingConfig signingConfigs.debug
+        }
+    }
 }
 flutter { source "../.." }
