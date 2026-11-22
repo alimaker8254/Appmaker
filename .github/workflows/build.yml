@@ -15,7 +15,7 @@ jobs:
           channel: stable
       - run: flutter create --platforms=android --project-name appmaker .
       - run: flutter pub get
-      - run: flutter build apk --release
+      - run: flutter build apk --release --target-platform android-arm64
       - uses: actions/upload-artifact@v4
         with:
           name: appmaker-release-apk
