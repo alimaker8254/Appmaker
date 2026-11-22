@@ -1,4 +1,5 @@
 name: Build APK
+# Rebuild after correcting the Flutter theme font configuration
 on:
   push:
     branches: [main]
