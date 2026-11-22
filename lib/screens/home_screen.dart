@@ -20,8 +20,8 @@ class HomeScreen extends StatelessWidget {
       _CardData('مسابقات', 'Matches', green, const [Color(0xFF0B3518), Color(0xFF06130A)], const _MatchArt()),
       _CardData('جدول لیگ', 'League Table', blue, const [Color(0xFF0A2442), Color(0xFF050B16)], const _LeagueArt()),
       _CardData('ارتقا بازیکنان', 'Player Upgrade', gold, const [Color(0xFF38270A), Color(0xFF140D04)], const _UpgradeArt()),
-      _CardData('خرید بازیکن', 'Buy Player', green, const [Color(0xFF0B3518), Color(0xFF06130A)], const _TeamArt()),
-      _CardData('تاکتیک‌ها', 'Tactics', cyan, const [Color(0xFF082D3A), Color(0xFF041018)], const _TacticsArt()),
+      _CardData('خرید بازیکن', 'Buy Player', gold, const [Color(0xFF38270A), Color(0xFF140D04)], const _TeamArt()),
+      _CardData('تاکتیک‌ها', 'Tactics', blue, const [Color(0xFF0A2442), Color(0xFF050B16)], const _TacticsArt()),
       _CardData('خرید مربی', 'Hire Coach', green, const [Color(0xFF0B3518), Color(0xFF06130A)], const _CoachArt()),
     ];
 
@@ -203,21 +203,21 @@ class _MatchArt extends StatelessWidget {
 class _MatchPainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size s) {
-    final silver = Paint()..shader = const LinearGradient(colors: [Colors.white, Color(0xFF9EAAB6), Colors.white]).createShader(Offset.zero & s);
-    final edge = Paint()..color = const Color(0xFF263342)..style = PaintingStyle.stroke..strokeWidth = 2.2;
-    Path shield(double x) => Path()..moveTo(x - s.width*.14, s.height*.17)..lineTo(x + s.width*.14, s.height*.17)
-      ..lineTo(x + s.width*.12, s.height*.61)..quadraticBezierTo(x, s.height*.86, x - s.width*.12, s.height*.61)..close();
-    for (final x in [s.width*.22, s.width*.78]) {
-      final path = shield(x); canvas.drawShadow(path, Colors.black, 5, true); canvas.drawPath(path, silver); canvas.drawPath(path, edge);
-      final stripe = Paint()..color = const Color(0xFF526477)..strokeWidth = 2;
-      canvas.drawLine(Offset(x, s.height*.2), Offset(x, s.height*.68), stripe);
-      canvas.drawLine(Offset(x-s.width*.08, s.height*.39), Offset(x+s.width*.08, s.height*.39), stripe);
-    }
-    final tp = TextPainter(text: const TextSpan(text: 'VS', style: TextStyle(color: Color(0xFFFFD700), fontSize: 30, fontWeight: FontWeight.w900, shadows: [Shadow(color: Color(0xFFFFD700), blurRadius: 12)])), textDirection: TextDirection.ltr)..layout();
-    tp.paint(canvas, Offset((s.width-tp.width)/2, (s.height-tp.height)*.43));
+    final line = Paint()..color = Colors.white.withOpacity(.95)..style = PaintingStyle.stroke..strokeWidth = 2.2;
+    final r = Rect.fromLTWH(s.width*.12, s.height*.12, s.width*.76, s.height*.76);
+    canvas.drawRRect(RRect.fromRectAndRadius(r, const Radius.circular(5)), line);
+    canvas.drawLine(Offset(s.width/2,r.top), Offset(s.width/2,r.bottom), line);
+    canvas.drawCircle(Offset(s.width/2,s.height/2), s.height*.19, line);
+    canvas.drawCircle(Offset(s.width/2,s.height/2), 2.5, Paint()..color=Colors.white);
+    final boxW=s.width*.17; final boxH=s.height*.40;
+    canvas.drawRect(Rect.fromLTWH(r.left,r.center.dy-boxH/2,boxW,boxH),line);
+    canvas.drawRect(Rect.fromLTWH(r.right-boxW,r.center.dy-boxH/2,boxW,boxH),line);
+    final smallW=s.width*.07; final smallH=s.height*.22;
+    canvas.drawRect(Rect.fromLTWH(r.left,r.center.dy-smallH/2,smallW,smallH),line);
+    canvas.drawRect(Rect.fromLTWH(r.right-smallW,r.center.dy-smallH/2,smallW,smallH),line);
   }
   @override
-  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
+  bool shouldRepaint(covariant CustomPainter oldDelegate)=>false;
 }
 
 class _LeagueArt extends StatelessWidget {
@@ -229,36 +229,40 @@ class _LeagueArt extends StatelessWidget {
     'https://upload.wikimedia.org/wikipedia/en/thumb/f/f4/Atletico_Madrid_2017_logo.svg/64px-Atletico_Madrid_2017_logo.svg.png',
     'https://upload.wikimedia.org/wikipedia/en/thumb/3/3b/Sevilla_FC_logo.svg/64px-Sevilla_FC_logo.svg.png',
   ];
-  static const names = ['Real Madrid', 'Barcelona', 'My Club', 'Atletico Madrid', 'Sevilla'];
+  static const names = ['رئال مادرید', 'بارسلونا', 'باشگاه من', 'اتلتیکو مادرید', 'سویا'];
   static const points = ['32', '31', '33', '28', '26'];
   @override
   Widget build(BuildContext context) => LayoutBuilder(builder: (context, c) => Column(
     children: [
-      SizedBox(height: c.maxHeight*.22, child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-        const Icon(Icons.emoji_events, color: Color(0xFFFFD700), size: 25),
-        const SizedBox(width: 6),
-        const Text('LEAGUE TABLE', style: TextStyle(color: Colors.white, fontSize: 12, fontWeight: FontWeight.bold)),
-      ])),
-      Container(height: c.maxHeight*.13, padding: const EdgeInsets.symmetric(horizontal: 4),
-        color: const Color(0x553C9FE8), child: const Row(children: [
+      SizedBox(height: c.maxHeight*.18, child: const Center(
+        child: Icon(Icons.emoji_events, color: Color(0xFFFFD700), size: 24),
+      )),
+      Container(height: c.maxHeight*.14, padding: const EdgeInsets.symmetric(horizontal: 4),
+        decoration: BoxDecoration(color: const Color(0x553C9FE8), borderRadius: BorderRadius.circular(4)),
+        child: const Row(children: [
           Expanded(flex: 1, child: Text('رتبه', textAlign: TextAlign.center, style: _tableHeader)),
           Expanded(flex: 5, child: Text('تیم', textAlign: TextAlign.center, style: _tableHeader)),
           Expanded(flex: 1, child: Text('امتیاز', textAlign: TextAlign.center, style: _tableHeader)),
         ])),
       for (int i = 0; i < 5; i++) Expanded(child: Container(
-        color: i == 2 ? const Color(0x5539FF14) : Colors.transparent,
+        width: double.infinity,
+        decoration: BoxDecoration(
+          color: i == 2 ? const Color(0x6639FF14) : Colors.transparent,
+          borderRadius: BorderRadius.circular(3),
+        ),
         padding: const EdgeInsets.symmetric(horizontal: 3),
         child: Row(children: [
-          Expanded(flex: 1, child: Text('${i+1}', textAlign: TextAlign.center, style: const TextStyle(color: Colors.white, fontSize: 9))),
+          Expanded(flex: 1, child: Text('${i+1}', textAlign: TextAlign.center,
+            style: const TextStyle(color: Colors.white, fontSize: 9))),
           Expanded(flex: 5, child: Row(children: [
             if (urls[i].isNotEmpty) Image.network(urls[i], width: 16, height: 16, fit: BoxFit.contain,
-              errorBuilder: (_, __, ___) => const SizedBox(width: 16, height: 16)),
-            if (urls[i].isEmpty) const SizedBox(width: 16, height: 16),
+              errorBuilder: (_, __, ___) => const SizedBox.shrink()),
             const SizedBox(width: 3),
             Expanded(child: Text(names[i], maxLines: 1, overflow: TextOverflow.ellipsis,
               style: TextStyle(color: Colors.white, fontSize: 9, fontWeight: i == 2 ? FontWeight.bold : FontWeight.normal))),
           ])),
-          Expanded(flex: 1, child: Text(points[i], textAlign: TextAlign.center, style: const TextStyle(color: Colors.white, fontSize: 9, fontWeight: FontWeight.bold))),
+          Expanded(flex: 1, child: Text(points[i], textAlign: TextAlign.center,
+            style: const TextStyle(color: Colors.white, fontSize: 9, fontWeight: FontWeight.bold))),
         ]),
       )),
     ],
@@ -269,23 +273,32 @@ const _tableHeader = TextStyle(color: Colors.white, fontSize: 8, fontWeight: Fon
 class _UpgradeArt extends StatelessWidget {
   const _UpgradeArt();
   @override
-  Widget build(BuildContext context) => CustomPaint(painter: _BarsPainter());
+  Widget build(BuildContext context) => CustomPaint(painter: _UpgradePainter());
 }
-class _BarsPainter extends CustomPainter {
+class _UpgradePainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size s) {
-    final base = s.height*.83; final barW = s.width*.14;
-    final heights = [s.height*.34, s.height*.55, s.height*.76];
-    for (int i=0;i<3;i++) {
-      final rect = Rect.fromLTWH(s.width*(.19+i*.25), base-heights[i], barW, heights[i]);
-      final paint = Paint()..shader = const LinearGradient(begin: Alignment.topCenter,end: Alignment.bottomCenter,colors: [Color(0xFFFFFF75),Color(0xFFFFA000)]).createShader(rect);
-      canvas.drawRRect(RRect.fromRectAndRadius(rect,const Radius.circular(6)),paint);
-      canvas.drawCircle(Offset(rect.center.dx,rect.top-7),3,Paint()..color=const Color(0xFFFFE66D));
+    final white=Paint()..color=Colors.white.withOpacity(.97);
+    final cx=s.width*.34; final head=s.shortestSide*.085;
+    canvas.drawCircle(Offset(cx,s.height*.19),head,white);
+    final torso=Path()
+      ..moveTo(cx-head*1.3,s.height*.43)..quadraticBezierTo(cx-head*1.6,s.height*.36,cx-head*.3,s.height*.38)
+      ..lineTo(cx+head*.9,s.height*.48)..lineTo(cx+head*2.0,s.height*.66)
+      ..lineTo(cx+head*1.5,s.height*.74)..lineTo(cx+head*.2,s.height*.60)
+      ..lineTo(cx-head*.7,s.height*.82)..lineTo(cx-head*1.5,s.height*.77)..close();
+    canvas.drawPath(torso,white);
+    final limb=Paint()..color=Colors.white.withOpacity(.97)..strokeWidth=head*.62..strokeCap=StrokeCap.round;
+    canvas.drawLine(Offset(cx-head*.8,s.height*.72),Offset(cx-head*1.7,s.height*.94),limb);
+    canvas.drawLine(Offset(cx+head*1.1,s.height*.58),Offset(cx+head*2.25,s.height*.32),limb);
+    canvas.drawLine(Offset(cx+head*2.25,s.height*.32),Offset(cx+head*2.8,s.height*.30),limb);
+    canvas.drawCircle(Offset(cx+head*3.2,s.height*.23),head*.48,Paint()..color=const Color(0xFFFFD700));
+    final gold=Paint()..color=const Color(0xFFFFD700)..strokeWidth=3.5..strokeCap=StrokeCap.round;
+    for(int i=0;i<3;i++){
+      final x=s.width*(.70+i*.10); final y=s.height*(.72-i*.19);
+      canvas.drawLine(Offset(x,y+s.height*.13),Offset(x,y),gold);
+      canvas.drawLine(Offset(x,y),Offset(x-5,y+7),gold);
+      canvas.drawLine(Offset(x,y),Offset(x+5,y+7),gold);
     }
-    final axis=Paint()..color=Colors.white.withOpacity(.75)..strokeWidth=2;
-    canvas.drawLine(Offset(s.width*.1,base),Offset(s.width*.92,base),axis);
-    final path=Path()..moveTo(s.width*.18,s.height*.42)..lineTo(s.width*.43,s.height*.27)..lineTo(s.width*.68,s.height*.13)..lineTo(s.width*.63,s.height*.13)..moveTo(s.width*.68,s.height*.13)..lineTo(s.width*.67,s.height*.19);
-    canvas.drawPath(path,Paint()..color=const Color(0xFFFFD700)..style=PaintingStyle.stroke..strokeWidth=3..strokeCap=StrokeCap.round);
   }
   @override
   bool shouldRepaint(covariant CustomPainter oldDelegate)=>false;
@@ -294,19 +307,22 @@ class _BarsPainter extends CustomPainter {
 class _TeamArt extends StatelessWidget {
   const _TeamArt();
   @override
-  Widget build(BuildContext context) => CustomPaint(painter: _SilhouettesPainter());
+  Widget build(BuildContext context) => CustomPaint(painter: _SearchPlayerPainter());
 }
-class _SilhouettesPainter extends CustomPainter {
+class _SearchPlayerPainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size s) {
-    final fill=Paint()..color=Colors.white.withOpacity(.96);
-    for(int i=0;i<3;i++){
-      final cx=s.width*(.25+i*.25); final r=s.shortestSide*.09;
-      canvas.drawCircle(Offset(cx,s.height*.25),r,fill);
-      final body=Path()..moveTo(cx-r*1.35,s.height*.49)..quadraticBezierTo(cx,s.height*.37,cx+r*1.35,s.height*.49)
-        ..lineTo(cx+r*1.75,s.height*.88)..quadraticBezierTo(cx,s.height*.96,cx-r*1.75,s.height*.88)..close();
-      canvas.drawPath(body,fill);
-    }
+    final white=Paint()..color=Colors.white.withOpacity(.97);
+    final cx=s.width*.38; final r=s.shortestSide*.13;
+    canvas.drawCircle(Offset(cx,s.height*.25),r,white);
+    final torso=Path()..moveTo(cx-r*1.9,s.height*.88)..lineTo(cx-r*1.55,s.height*.52)
+      ..quadraticBezierTo(cx,s.height*.39,cx+r*1.55,s.height*.52)..lineTo(cx+r*1.9,s.height*.88)..close();
+    canvas.drawPath(torso,white);
+    final lens=Offset(s.width*.68,s.height*.49); final radius=s.shortestSide*.22;
+    canvas.drawCircle(lens,radius,Paint()..color=const Color(0xFFFFD700)..style=PaintingStyle.stroke..strokeWidth=5);
+    canvas.drawLine(Offset(lens.dx+radius*.68,lens.dy+radius*.68),
+      Offset(lens.dx+radius*1.55,lens.dy+radius*1.55),
+      Paint()..color=const Color(0xFFFFD700)..strokeWidth=8..strokeCap=StrokeCap.round);
   }
   @override
   bool shouldRepaint(covariant CustomPainter oldDelegate)=>false;
@@ -318,21 +334,30 @@ class _TacticsArt extends StatelessWidget {
   Widget build(BuildContext context)=>CustomPaint(painter:_TacticsPainter());
 }
 class _TacticsPainter extends CustomPainter {
+  void arrow(Canvas canvas, Offset a, Offset control, Offset b, Paint p) {
+    final path=Path()..moveTo(a.dx,a.dy)..quadraticBezierTo(control.dx,control.dy,b.dx,b.dy);
+    canvas.drawPath(path,p);
+    final d=b-control; final len=d.distance;
+    if(len>0){
+      final ux=d.dx/len, uy=d.dy/len;
+      canvas.drawLine(b,Offset(b.dx-ux*9-uy*5,b.dy-uy*9+ux*5),p);
+      canvas.drawLine(b,Offset(b.dx-ux*9+uy*5,b.dy-uy*9-ux*5),p);
+    }
+  }
   @override
   void paint(Canvas canvas,Size s){
-    final line=Paint()..color=Colors.white.withOpacity(.9)..style=PaintingStyle.stroke..strokeWidth=2;
-    final r=Rect.fromLTWH(s.width*.16,s.height*.06,s.width*.68,s.height*.88);
-    canvas.drawRRect(RRect.fromRectAndRadius(r,const Radius.circular(8)),line);
-    canvas.drawLine(Offset(s.width/2,r.top),Offset(s.width/2,r.bottom),line);
-    canvas.drawCircle(Offset(s.width/2,s.height/2),s.height*.13,line);
-    canvas.drawRect(Rect.fromLTWH(r.left+s.width*.12,r.top,s.width*.44,s.height*.13),line);
-    canvas.drawRect(Rect.fromLTWH(r.left+s.width*.12,r.bottom-s.height*.13,s.width*.44,s.height*.13),line);
-    final pts=<Offset>[
-      Offset(s.width*.5,s.height*.12),Offset(s.width*.32,s.height*.28),Offset(s.width*.5,s.height*.28),Offset(s.width*.68,s.height*.28),
-      Offset(s.width*.27,s.height*.49),Offset(s.width*.5,s.height*.47),Offset(s.width*.73,s.height*.49),
-      Offset(s.width*.32,s.height*.7),Offset(s.width*.5,s.height*.7),Offset(s.width*.68,s.height*.7),Offset(s.width*.5,s.height*.88),
-    ];
-    for(final p in pts){canvas.drawCircle(p,5,Paint()..color=Colors.white);canvas.drawCircle(p,5,Paint()..color=const Color(0xFF00F5E9)..style=PaintingStyle.stroke..strokeWidth=1.2);}
+    final line=Paint()..color=Colors.white.withOpacity(.95)..style=PaintingStyle.stroke..strokeWidth=2.2..strokeCap=StrokeCap.round;
+    final board=Rect.fromLTWH(s.width*.12,s.height*.08,s.width*.76,s.height*.82);
+    canvas.drawRRect(RRect.fromRectAndRadius(board,const Radius.circular(12)),line);
+    final route=Paint()..color=const Color(0xFF00BFFF)..style=PaintingStyle.stroke..strokeWidth=2.4..strokeCap=StrokeCap.round;
+    final pts=[Offset(s.width*.28,s.height*.30),Offset(s.width*.49,s.height*.28),Offset(s.width*.70,s.height*.30),
+      Offset(s.width*.35,s.height*.65),Offset(s.width*.63,s.height*.65)];
+    for(final p in pts) canvas.drawCircle(p,5.5,Paint()..color=Colors.white);
+    arrow(canvas,pts[0],Offset(s.width*.34,s.height*.12),Offset(s.width*.51,s.height*.23),route);
+    arrow(canvas,pts[1],Offset(s.width*.63,s.height*.10),Offset(s.width*.72,s.height*.26),route);
+    arrow(canvas,pts[3],Offset(s.width*.48,s.height*.47),Offset(s.width*.65,s.height*.57),route);
+    arrow(canvas,pts[4],Offset(s.width*.49,s.height*.82),Offset(s.width*.31,s.height*.72),route);
+    canvas.drawCircle(Offset(s.width*.5,s.height*.48),s.height*.10,line);
   }
   @override
   bool shouldRepaint(covariant CustomPainter oldDelegate)=>false;
@@ -348,15 +373,25 @@ class _CoachPainter extends CustomPainter {
   void paint(Canvas canvas,Size s){
     final white=Paint()..color=Colors.white.withOpacity(.97);
     final cx=s.width*.39; final r=s.shortestSide*.12;
-    canvas.drawCircle(Offset(cx,s.height*.24),r,white);
-    final torso=Path()..moveTo(cx-r*1.8,s.height*.83)..lineTo(cx-r*1.35,s.height*.49)
-      ..quadraticBezierTo(cx,s.height*.37,cx+r*1.35,s.height*.49)..lineTo(cx+r*1.8,s.height*.83)..close();
-    canvas.drawPath(torso,white);
+    canvas.drawCircle(Offset(cx,s.height*.20),r,white);
+    final jacket=Path()..moveTo(cx-r*1.05,s.height*.43)..lineTo(cx-r*2.15,s.height*.57)
+      ..lineTo(cx-r*2.45,s.height*.91)..lineTo(cx+r*2.45,s.height*.91)
+      ..lineTo(cx+r*2.15,s.height*.57)..lineTo(cx+r*1.05,s.height*.43)
+      ..lineTo(cx,s.height*.58)..close();
+    canvas.drawPath(jacket,white);
+    final dark=Paint()..color=const Color(0xFF193A2A);
+    final lapel1=Path()..moveTo(cx-r*1.05,s.height*.43)..lineTo(cx-r*.15,s.height*.73)
+      ..lineTo(cx-r*.45,s.height*.86)..lineTo(cx-r*1.0,s.height*.60)..close();
+    final lapel2=Path()..moveTo(cx+r*1.05,s.height*.43)..lineTo(cx+r*.15,s.height*.73)
+      ..lineTo(cx+r*.45,s.height*.86)..lineTo(cx+r*1.0,s.height*.60)..close();
+    canvas.drawPath(lapel1,dark); canvas.drawPath(lapel2,dark);
+    final tie=Path()..moveTo(cx,s.height*.62)..lineTo(cx-r*.25,s.height*.69)
+      ..lineTo(cx,s.height*.88)..lineTo(cx+r*.25,s.height*.69)..close();
+    canvas.drawPath(tie,dark);
     final p=Paint()..color=const Color(0xFF39FF14)..strokeWidth=s.shortestSide*.055..strokeCap=StrokeCap.round;
-    final center=Offset(s.width*.77,s.height*.53); final len=s.shortestSide*.22;
+    final center=Offset(s.width*.78,s.height*.51); final len=s.shortestSide*.22;
     canvas.drawLine(Offset(center.dx-len,center.dy),Offset(center.dx+len,center.dy),p);
     canvas.drawLine(Offset(center.dx,center.dy-len),Offset(center.dx,center.dy+len),p);
-    canvas.drawCircle(center,len*1.42,Paint()..color=const Color(0xFF39FF14)..style=PaintingStyle.stroke..strokeWidth=2);
   }
   @override
   bool shouldRepaint(covariant CustomPainter oldDelegate)=>false;
