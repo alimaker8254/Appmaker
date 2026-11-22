@@ -1,32 +1,45 @@
-<!DOCTYPE html>
-<html lang="fa" dir="rtl">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>انتخاب تیم | فوتبال</title>
-    <link rel="stylesheet" href="style.css">
-</head>
-<body>
-    <div class="bg-lines"></div>
-    
-    <div class="header-container">
-        <div class="header-box">
-            <h1>لطفا یک تیم را انتخاب کنید</h1>
-        </div>
-    </div>
+name: Build Android APK
 
-    <div class="teams-grid" id="teamsGrid">
-        <!-- کارت‌ها توسط JS ساخته می‌شوند -->
-    </div>
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
 
-    <div class="footer-container">
-        <button class="confirm-btn" id="confirmBtn" disabled>
-            <span>تأیید</span>
-            <svg viewBox="0 0 24 24" class="check-icon"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>
-        </button>
-    </div>
+jobs:
+  build:
+    runs-on: ubuntu-latest
 
-    <script src="teams.js"></script>
-    <script src="app.js"></script>
-</body>
-</html>
+    steps:
+    - name: Checkout Source
+      uses: actions/checkout@v4
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20'
+
+    - name: Setup Java JDK
+      uses: actions/setup-java@v4
+      with:
+        distribution: 'temurin'
+        java-version: '17'
+
+    - name: Install Capacitor Dependencies
+      run: npm install
+
+    - name: Init and Sync Capacitor
+      run: |
+        npx cap add android
+        npx cap sync android
+
+    - name: Build APK
+      run: |
+        cd android
+        chmod +x gradlew
+        ./gradlew assembleDebug
+
+    - name: Upload APK
+      uses: actions/upload-artifact@v4
+      with:
+        name: Football-Game-APK
+        path: android/app/build/outputs/apk/debug/app-debug.apk
