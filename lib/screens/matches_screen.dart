@@ -68,7 +68,7 @@ class MatchesScreen extends StatelessWidget {
                           player: _starters[i],
                           x: _positions[i].$1,
                           y: _positions[i].$2,
-                          cardWidth: (w * .115).clamp(104.0, 180.0),
+                          cardWidth: (w * .115).clamp(104.0, 180.0).toDouble(),
                           fieldWidth: w,
                           fieldHeight: fieldHeight,
                           compact: compact,
@@ -92,7 +92,7 @@ class MatchesScreen extends StatelessWidget {
                     itemCount: _bench.length,
                     separatorBuilder: (_, __) => SizedBox(width: compact ? 8 : 15),
                     itemBuilder: (context, index) => SizedBox(
-                      width: (w * .112).clamp(100.0, 174.0),
+                      width: (w * .112).clamp(100.0, 174.0).toDouble(),
                       child: _SquadCard(player: _bench[index], compact: compact),
                     ),
                   ),
