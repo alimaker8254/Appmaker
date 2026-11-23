@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../models/club.dart';
+import 'settings_screen.dart';
 
 class HomeScreen extends StatelessWidget {
   final Club club;
@@ -124,7 +125,12 @@ class _TopBar extends StatelessWidget {
               SizedBox(width: compact ? 5 : 9),
               _Resource(icon: Icons.diamond, text: '15', color: const Color(0xFFB44CFF), compact: compact),
               SizedBox(width: compact ? 7 : 13),
-              Icon(Icons.settings, color: const Color(0xFF00BFFF), size: compact ? 19 : 25),
+              GestureDetector(
+                onTap: () => Navigator.of(context).push(
+                  MaterialPageRoute(builder: (_) => SettingsScreen(club: club)),
+                ),
+                child: Icon(Icons.settings, color: const Color(0xFF00BFFF), size: compact ? 19 : 25),
+              ),
             ],
           ),
         ),
