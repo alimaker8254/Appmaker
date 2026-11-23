@@ -147,7 +147,8 @@ class _MatchesScreenState extends State<MatchesScreen> {
             final compact = h < 500;
             final controlHeight = compact ? 92.0 : 116.0;
             final fieldHeight = h - controlHeight;
-            final cardWidth = (w * .092).clamp(104.0, 150.0).toDouble();
+            final denseFormation = _selected.lines.length == 5 || _selected.lines.any((line) => line.length >= 5);
+            final cardWidth = (w * (denseFormation ? .080 : .092)).clamp(denseFormation ? 94.0 : 104.0, denseFormation ? 128.0 : 150.0).toDouble();
             final cardHeight = cardWidth * .66;
             return Column(
               children: [
@@ -233,6 +234,7 @@ class _MatchesScreenState extends State<MatchesScreen> {
   // Keep all cards within the playable width and distribute each line evenly.
   double _xForIndex(int index, int count, double width) {
     if (count == 1) return width * .50;
+    // Keep wide horizontal lanes so even five-player lines have visible gaps.
     const left = .19;
     const right = .81;
     return width * (left + (right - left) * index / (count - 1));
