@@ -232,12 +232,57 @@ class _MatchPainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size s) {
     final side = s.height * 1.02;
-    final fill = Paint()..shader = const LinearGradient(colors:[Color(0xFFFFFFFF),Color(0xFFB8D5F5),Color(0xFFEAF4FF)]).createShader(Rect.fromCenter(center: Offset.zero,width:side,height:side));
-    final edge = Paint()..color=const Color(0xFFDAE9FF)..style=PaintingStyle.stroke..strokeWidth=3;
-    shield(canvas,Offset(s.width*.23,s.height*.49),side*.78,side,fill,edge);
-    shield(canvas,Offset(s.width*.77,s.height*.49),side*.78,side,fill,edge);
-    final tp=TextPainter(text:const TextSpan(text:'VS',style:TextStyle(color:Color(0xFFFFE500),fontSize:42,fontWeight:FontWeight.w900)),textDirection:TextDirection.ltr)..layout();
-    tp.paint(canvas,Offset((s.width-tp.width)/2,(s.height-tp.height)/2));
+    final leftCenter = Offset(s.width*.23,s.height*.49);
+    final rightCenter = Offset(s.width*.77,s.height*.49);
+    final shieldW = side*.78;
+    final blueFill = Paint()..shader = const LinearGradient(
+      begin: Alignment.topLeft, end: Alignment.bottomRight,
+      colors: [Color(0xFF58B9FF), Color(0xFF0756B8), Color(0xFF092D70)],
+    ).createShader(Rect.fromCenter(center:leftCenter,width:shieldW,height:side));
+    final redFill = Paint()..shader = const LinearGradient(
+      begin: Alignment.topLeft, end: Alignment.bottomRight,
+      colors: [Color(0xFFFF7777), Color(0xFFCB1834), Color(0xFF760D25)],
+    ).createShader(Rect.fromCenter(center:rightCenter,width:shieldW,height:side));
+    final blueEdge = Paint()..color=const Color(0xFF9BD8FF)..style=PaintingStyle.stroke..strokeWidth=3;
+    final redEdge = Paint()..color=const Color(0xFFFFA0A0)..style=PaintingStyle.stroke..strokeWidth=3;
+    shield(canvas,leftCenter,shieldW,side,blueFill,blueEdge);
+    shield(canvas,rightCenter,shieldW,side,redFill,redEdge);
+
+    // Yellow symbols are custom vector paths, centered and kept safely inside each shield.
+    final bolt = Path()
+      ..moveTo(leftCenter.dx + side*.045, leftCenter.dy - side*.25)
+      ..lineTo(leftCenter.dx - side*.105, leftCenter.dy + side*.015)
+      ..lineTo(leftCenter.dx - side*.018, leftCenter.dy + side*.015)
+      ..lineTo(leftCenter.dx - side*.055, leftCenter.dy + side*.245)
+      ..lineTo(leftCenter.dx + side*.115, leftCenter.dy - side*.045)
+      ..lineTo(leftCenter.dx + side*.025, leftCenter.dy - side*.045)
+      ..close();
+    final symbolPaint = Paint()..color=const Color(0xFFFFE500)..style=PaintingStyle.fill;
+    canvas.drawPath(bolt,symbolPaint);
+
+    final flame = Path()
+      ..moveTo(rightCenter.dx, rightCenter.dy - side*.25)
+      ..cubicTo(rightCenter.dx + side*.015, rightCenter.dy - side*.10,
+          rightCenter.dx + side*.19, rightCenter.dy - side*.055,
+          rightCenter.dx + side*.105, rightCenter.dy + side*.12)
+      ..cubicTo(rightCenter.dx + side*.075, rightCenter.dy + side*.245,
+          rightCenter.dx - side*.075, rightCenter.dy + side*.255,
+          rightCenter.dx - side*.14, rightCenter.dy + side*.12)
+      ..cubicTo(rightCenter.dx - side*.20, rightCenter.dy - side*.015,
+          rightCenter.dx - side*.035, rightCenter.dy - side*.11,
+          rightCenter.dx, rightCenter.dy - side*.25)
+      ..close();
+    canvas.drawPath(flame,symbolPaint);
+    final innerFlame = Path()
+      ..moveTo(rightCenter.dx + side*.012, rightCenter.dy - side*.015)
+      ..cubicTo(rightCenter.dx + side*.085, rightCenter.dy + side*.075,
+          rightCenter.dx + side*.025, rightCenter.dy + side*.18,
+          rightCenter.dx - side*.035, rightCenter.dy + side*.13)
+      ..cubicTo(rightCenter.dx - side*.075, rightCenter.dy + side*.075,
+          rightCenter.dx - side*.005, rightCenter.dy + side*.035,
+          rightCenter.dx + side*.012, rightCenter.dy - side*.015)
+      ..close();
+    canvas.drawPath(innerFlame,Paint()..color=const Color(0xFFFFF2A0));
   }
   @override
   bool shouldRepaint(covariant CustomPainter oldDelegate)=>false;
@@ -338,51 +383,41 @@ class _PeoplePainter extends CustomPainter {
 class _TacticsArt extends StatelessWidget {
   const _TacticsArt();
   @override
-  Widget build(BuildContext context)=>CustomPaint(painter:_TacticsBoardPainter());
+  Widget build(BuildContext context)=>CustomPaint(painter:_ShuffleArrowsPainter());
 }
-class _TacticsBoardPainter extends CustomPainter {
+class _ShuffleArrowsPainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size s) {
-    final line=Paint()..color=Colors.white..style=PaintingStyle.stroke..strokeWidth=2.4..strokeCap=StrokeCap.round..strokeJoin=StrokeJoin.round;
-    final solid=Paint()..color=Colors.white;
-    final field=Rect.fromLTWH(s.width*.105,s.height*.075,s.width*.79,s.height*.85);
-    canvas.drawRRect(RRect.fromRectAndRadius(field,const Radius.circular(9)),line);
-    canvas.drawLine(Offset(field.left,field.center.dy),Offset(field.right,field.center.dy),line);
-    canvas.drawCircle(field.center,s.height*.105,line);
-    canvas.drawCircle(field.center,s.height*.012,solid);
-    // Penalty areas and six-yard boxes on both ends.
-    final penaltyW=field.width*.19, penaltyH=field.height*.30;
-    final sixW=field.width*.085, sixH=field.height*.14;
-    canvas.drawRect(Rect.fromLTWH(field.left,field.center.dy-penaltyH/2,penaltyW,penaltyH),line);
-    canvas.drawRect(Rect.fromLTWH(field.right-penaltyW,field.center.dy-penaltyH/2,penaltyW,penaltyH),line);
-    canvas.drawRect(Rect.fromLTWH(field.left,field.center.dy-sixH/2,sixW,sixH),line);
-    canvas.drawRect(Rect.fromLTWH(field.right-sixW,field.center.dy-sixH/2,sixW,sixH),line);
-    // Formation markers are placed in three clear lines plus goalkeeper (4-3-3).
-    final rows=<List<double>>[
-      <double>[.50],                         // goalkeeper
-      <double>[.16,.39,.61,.84],            // four defenders
-      <double>[.27,.50,.73],                // three midfielders
-      <double>[.27,.50,.73],                // three forwards
-    ];
-    final yRows=<double>[.87,.66,.43,.20];
-    final tokenR=s.height*.036;
-    for(int row=0;row<rows.length;row++){
-      for(final x in rows[row]){
-        final center=Offset(field.left+field.width*x,field.top+field.height*yRows[row]);
-        canvas.drawCircle(center,tokenR+2,Paint()..color=const Color(0xFF06172C));
-        canvas.drawCircle(center,tokenR,solid);
-        canvas.drawCircle(center,tokenR,line..strokeWidth=1.1);
-      }
+    final stroke = Paint()
+      ..color = Colors.white
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = s.height * .105
+      ..strokeCap = StrokeCap.round
+      ..strokeJoin = StrokeJoin.round;
+    final arrowHead = Paint()..color = Colors.white..style = PaintingStyle.fill;
+
+    // Two clean, crossing directional paths form a bold shuffle symbol.
+    final upperPath = Path()
+      ..moveTo(s.width*.19, s.height*.69)
+      ..cubicTo(s.width*.34, s.height*.69, s.width*.37, s.height*.30, s.width*.57, s.height*.30)
+      ..lineTo(s.width*.79, s.height*.30);
+    canvas.drawPath(upperPath, stroke);
+    final lowerPath = Path()
+      ..moveTo(s.width*.19, s.height*.30)
+      ..cubicTo(s.width*.36, s.height*.30, s.width*.39, s.height*.69, s.width*.57, s.height*.69)
+      ..lineTo(s.width*.79, s.height*.69);
+    canvas.drawPath(lowerPath, stroke);
+
+    void head(Offset tip, double direction) {
+      final p = Path()
+        ..moveTo(tip.dx, tip.dy)
+        ..lineTo(tip.dx - s.width*.15, tip.dy - direction*s.height*.13)
+        ..lineTo(tip.dx - s.width*.15, tip.dy + direction*s.height*.13)
+        ..close();
+      canvas.drawPath(p, arrowHead);
     }
-    // Small forward movement arrows, subtle enough not to clutter the formation.
-    final arrow=Paint()..color=Colors.white.withOpacity(.8)..style=PaintingStyle.stroke..strokeWidth=1.5..strokeCap=StrokeCap.round;
-    for(final x in <double>[.27,.50,.73]){
-      final from=Offset(field.left+field.width*x,field.top+field.height*.31);
-      final to=Offset(from.dx,from.dy-s.height*.045);
-      canvas.drawLine(from,to,arrow);
-      canvas.drawLine(to,Offset(to.dx-s.width*.012,to.dy+s.height*.018),arrow);
-      canvas.drawLine(to,Offset(to.dx+s.width*.012,to.dy+s.height*.018),arrow);
-    }
+    head(Offset(s.width*.84,s.height*.30), 1);
+    head(Offset(s.width*.84,s.height*.69), -1);
   }
   @override
   bool shouldRepaint(covariant CustomPainter oldDelegate)=>false;
@@ -416,7 +451,7 @@ class _CoachPlusPainter extends CustomPainter {
     canvas.drawPath(left,lapel); canvas.drawPath(right,lapel);
     // Plus is closer to the shoulder, with a visible gap.
     final plus=Paint()..color=Colors.white..strokeWidth=s.height*.095..strokeCap=StrokeCap.round;
-    final px=s.width*.705, py=s.height*.53, arm=s.height*.155;
+    final px=s.width*.59, py=s.height*.53, arm=s.height*.155;
     canvas.drawLine(Offset(px-arm,py),Offset(px+arm,py),plus);
     canvas.drawLine(Offset(px,py-arm),Offset(px,py+arm),plus);
   }
