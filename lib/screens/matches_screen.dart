@@ -254,7 +254,7 @@ class _MatchesScreenState extends State<MatchesScreen> {
       5: [.14, .32, .50, .68, .86],
     };
     final positions = centers[count] ?? centers[5]!;
-    return width * positions[index.clamp(0, positions.length - 1)];
+    return width * positions[index];
   }
 }
 
