@@ -221,7 +221,7 @@ class _MatchPainter extends CustomPainter {
   }
   @override
   void paint(Canvas canvas, Size s) {
-    final side = s.height * .88;
+    final side = s.height * 1.02;
     final fill = Paint()..shader = const LinearGradient(colors:[Color(0xFFFFFFFF),Color(0xFFB8D5F5),Color(0xFFEAF4FF)]).createShader(Rect.fromCenter(center: Offset.zero,width:side,height:side));
     final edge = Paint()..color=const Color(0xFFDAE9FF)..style=PaintingStyle.stroke..strokeWidth=3;
     shield(canvas,Offset(s.width*.23,s.height*.49),side*.78,side,fill,edge);
@@ -243,7 +243,7 @@ class _TrophyPainter extends CustomPainter {
   void paint(Canvas canvas,Size s){
     final gold=Paint()..color=const Color(0xFFFFD500);
     final edge=Paint()..color=const Color(0xFFFFE34D)..style=PaintingStyle.stroke..strokeWidth=3;
-    final cx=s.width*.5; final top=s.height*.06; final w=s.height*.43; final h=s.height*.72;
+    final cx=s.width*.5; final top=s.height*.02; final w=s.width*.205; final h=s.height*.90;
     final cup=Path()
       ..moveTo(cx-w*.72,top)..lineTo(cx+w*.72,top)
       ..lineTo(cx+w*.60,top+h*.47)
@@ -274,10 +274,10 @@ class _UpgradeBarsPainter extends CustomPainter {
   @override
   void paint(Canvas canvas,Size s){
     final p=Paint()..color=Colors.white;
-    final widths=s.height*.20;
-    final heights=[s.height*.35,s.height*.58,s.height*.82];
+    final widths=s.width*.085;
+    final heights=[s.height*.43,s.height*.68,s.height*.94];
     for(int i=0;i<3;i++){
-      final x=s.width*(.27+i*.20);
+      final x=s.width*(.25+i*.22);
       final rect=Rect.fromLTWH(x,s.height*.88-heights[i],widths,heights[i]);
       canvas.drawRRect(RRect.fromRectAndRadius(rect,Radius.circular(widths*.22)),p);
     }
@@ -296,8 +296,8 @@ class _PeoplePainter extends CustomPainter {
   void paint(Canvas canvas,Size s){
     final p=Paint()..color=Colors.white;
     void person(double x,double scale){
-      final headR=s.height*.145*scale;
-      final headY=s.height*.30;
+      final headR=s.height*.205*scale;
+      final headY=s.height*.27;
       canvas.drawCircle(Offset(x,headY),headR,p);
       final body=Path()
         ..moveTo(x-headR*1.75,s.height*.86)
@@ -333,8 +333,8 @@ class _TacticsBoardPainter extends CustomPainter {
       ..close();
     canvas.drawPath(board,line);
     final dot=Paint()..color=Colors.white;
-    final xs=[.31,.50,.69]; final ys=[.31,.49,.68];
-    for(final y in ys){for(final x in xs){canvas.drawCircle(Offset(s.width*x,s.height*y),s.shortestSide*.045,dot);}}
+    final xs=[.30,.50,.70]; final ys=[.28,.49,.70];
+    for(final y in ys){for(final x in xs){canvas.drawCircle(Offset(s.width*x,s.height*y),s.height*.060,dot);}}
     final box=Path()
       ..moveTo(s.width*.20,s.height*.40)..lineTo(s.width*.29,s.height*.40)
       ..lineTo(s.width*.27,s.height*.59)..lineTo(s.width*.18,s.height*.59)
@@ -359,7 +359,7 @@ class _CoachPlusPainter extends CustomPainter {
   @override
   void paint(Canvas canvas,Size s){
     final white=Paint()..color=Colors.white;
-    final cx=s.width*.40; final r=s.height*.16;
+    final cx=s.width*.39; final r=s.height*.205;
     canvas.drawCircle(Offset(cx,s.height*.25),r,white);
     final torso=Path()
       ..moveTo(cx-r*1.75,s.height*.87)
@@ -367,8 +367,8 @@ class _CoachPlusPainter extends CustomPainter {
       ..quadraticBezierTo(cx,s.height*.43,cx+r*1.48,s.height*.55)
       ..lineTo(cx+r*1.75,s.height*.87)..close();
     canvas.drawPath(torso,white);
-    final plus=Paint()..color=const Color(0xFFFFFFFF)..strokeWidth=s.height*.12..strokeCap=StrokeCap.round;
-    final x=s.width*.79; final y=s.height*.50; final arm=s.height*.19;
+    final plus=Paint()..color=const Color(0xFFFFFFFF)..strokeWidth=s.height*.15..strokeCap=StrokeCap.round;
+    final x=s.width*.79; final y=s.height*.49; final arm=s.height*.23;
     canvas.drawLine(Offset(x-arm,y),Offset(x+arm,y),plus);
     canvas.drawLine(Offset(x,y-arm),Offset(x,y+arm),plus);
   }
