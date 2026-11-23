@@ -148,10 +148,10 @@ class _MatchesScreenState extends State<MatchesScreen> {
             final fieldHeight = h * .685;
             final benchHeight = h * .185;
             final fiveRows = _selected.lines.length == 5;
-            final cardWidth = (w * (fiveRows ? .095 : .108)).clamp(88.0, 168.0).toDouble();
+            final cardWidth = (w * (fiveRows ? .085 : .103)).clamp(88.0, 168.0).toDouble();
             final cardHeight = cardWidth * .66;
             final rowYs = fiveRows
-                ? const [ .135, .315, .495, .675, .875 ]
+                ? const [ .12, .31, .50, .69, .88 ]
                 : const [ .16, .405, .65, .875 ];
             return Column(
               children: [
@@ -239,8 +239,8 @@ class _MatchesScreenState extends State<MatchesScreen> {
   // Keep all cards within the playable width and distribute each line evenly.
   double _xForIndex(int index, int count, double width) {
     if (count == 1) return width * .50;
-    const left = .16;
-    const right = .84;
+    const left = .19;
+    const right = .81;
     return width * (left + (right - left) * index / (count - 1));
   }
 }
