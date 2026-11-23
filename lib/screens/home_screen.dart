@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../models/club.dart';
 import 'settings_screen.dart';
+import 'buy_player_screen.dart';
 import '../services/game_music.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -73,7 +74,16 @@ class _HomeScreenState extends State<HomeScreen> {
                                 children: [
                                   for (int c = 0; c < 3; c++) ...[
                                     if (c != 0) const SizedBox(width: 15),
-                                    Expanded(child: _DashboardCard(data: cards[r * 3 + c], compact: compact)),
+                                    Expanded(
+                                      child: GestureDetector(
+                                        onTap: r * 3 + c == 5
+                                            ? () => Navigator.of(context).push(
+                                                  MaterialPageRoute(builder: (_) => BuyPlayerScreen(club: widget.club)),
+                                                )
+                                            : null,
+                                        child: _DashboardCard(data: cards[r * 3 + c], compact: compact),
+                                      ),
+                                    ),
                                   ],
                                 ],
                               ),
