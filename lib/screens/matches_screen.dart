@@ -147,21 +147,11 @@ class _MatchesScreenState extends State<MatchesScreen> {
             final compact = h < 500;
             final controlHeight = compact ? 92.0 : 116.0;
             final fieldHeight = h - controlHeight;
-            // Size the on-pitch cards from BOTH available width and the
-            // vertical lane spacing. This prevents collisions in 4-2-3-1
-            // (five rows) and keeps five-player lines inside the pitch.
-            final rowCount = _selected.lines.length;
-            final maxPlayersInLine = _selected.lines.fold<int>(
-              1, (maximum, line) => line.length > maximum ? line.length : maximum,
-            );
-            const pitchTop = .13;
-            const pitchBottom = .89;
-            final rowGap = rowCount <= 1 ? fieldHeight : fieldHeight * (pitchBottom - pitchTop) / (rowCount - 1);
-            final verticalCardWidth = rowGap * .76 / .66;
-            final horizontalCardWidth = (w * .78 - (maxPlayersInLine - 1) * w * .018) / maxPlayersInLine;
-            final cardWidth = verticalCardWidth.clamp(54.0, 150.0).toDouble() < horizontalCardWidth
-                ? verticalCardWidth.clamp(54.0, 150.0).toDouble()
-                : horizontalCardWidth;
+            // One shared card size for every formation. It scales only with
+            // the screen, never with the number of tactical rows or players.
+            final widthLimit = (w * .118).clamp(84.0, 178.0).toDouble();
+            final heightLimit = fieldHeight * .29;
+            final cardWidth = widthLimit < heightLimit ? widthLimit : heightLimit;
             final cardHeight = cardWidth * .66;
             return Column(
               children: [
@@ -237,19 +227,34 @@ class _MatchesScreenState extends State<MatchesScreen> {
   }
 
   double _rowY(int row, int count) {
-    if (count == 1) return .50;
-    // Separate every tactical line; the goalkeeper is always the deepest row.
-    const top = .13;
-    const bottom = .89;
-    return top + (bottom - top) * row / (count - 1);
+    // Formation-specific vertical lanes, tuned to the supplied reference
+    // layouts. Goalkeeper remains the deepest player in every formation.
+    final lanes = switch (_selected.name) {
+      '4-2-3-1' => const [.10, .29, .48, .69, .89],
+      '4-3-3' => const [.14, .43, .69, .89],
+      '4-4-2' => const [.14, .42, .69, .89],
+      '3-4-3' => const [.14, .41, .69, .89],
+      '5-3-2' => const [.16, .43, .69, .89],
+      '4-2-4' => const [.15, .44, .69, .89],
+      '3-5-2' => const [.15, .43, .69, .89],
+      _ => const [.14, .40, .66, .89],
+    };
+    if (row < lanes.length) return lanes[row];
+    return .89;
   }
 
-  // Symmetric lanes with enough room for the widest line (up to five players).
+  // Balanced horizontal lanes: 2/3/4/5-player lines are centered as a
+  // group rather than stretched to the touchlines.
   double _xForIndex(int index, int count, double width) {
-    if (count == 1) return width * .50;
-    const left = .12;
-    const right = .88;
-    return width * (left + (right - left) * index / (count - 1));
+    const centers = <int, List<double>>{
+      1: [.50],
+      2: [.40, .60],
+      3: [.32, .50, .68],
+      4: [.21, .40, .60, .79],
+      5: [.14, .32, .50, .68, .86],
+    };
+    final positions = centers[count] ?? centers[5]!;
+    return width * positions[index.clamp(0, positions.length - 1)];
   }
 }
 
@@ -292,15 +297,19 @@ class _SquadCard extends StatelessWidget {
               child: Row(
                 children: [
                   Expanded(
+                    flex: 4,
+                    child: Icon(Icons.person, color: Colors.white.withOpacity(.92), size: compact ? 42 : 55),
+                  ),
+                  Expanded(
                     flex: 5,
                     child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.end,
                       mainAxisAlignment: MainAxisAlignment.center,
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         FittedBox(
                           fit: BoxFit.scaleDown,
-                          alignment: Alignment.centerLeft,
+                          alignment: Alignment.centerRight,
                           child: Text('${player.rating}',
                             style: TextStyle(color: Colors.white, fontSize: compact ? 20 : 25, height: 1.0, fontWeight: FontWeight.w900)),
                         ),
@@ -308,16 +317,12 @@ class _SquadCard extends StatelessWidget {
                         if (showPosition)
                           FittedBox(
                             fit: BoxFit.scaleDown,
-                            alignment: Alignment.centerLeft,
+                            alignment: Alignment.centerRight,
                             child: Text(player.position,
                               style: TextStyle(color: const Color(0xFFFFE500), fontSize: compact ? 16 : 20, height: 1.0, fontWeight: FontWeight.w900)),
                           ),
                       ],
                     ),
-                  ),
-                  Expanded(
-                    flex: 4,
-                    child: Icon(Icons.person, color: Colors.white.withOpacity(.92), size: compact ? 42 : 55),
                   ),
                 ],
               ),
