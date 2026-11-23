@@ -266,14 +266,14 @@ class _MatchPainter extends CustomPainter {
         text: 'VS',
         style: TextStyle(
           color: const Color(0xFFFFE500),
-          fontSize: side * .245,
+          fontSize: side * .29,
           fontWeight: FontWeight.w900,
           letterSpacing: -1.2,
         ),
       ),
       textDirection: TextDirection.ltr,
       textAlign: TextAlign.center,
-    )..layout(maxWidth: s.width * .22);
+    )..layout(maxWidth: s.width * .26);
     vsPainter.paint(
       canvas,
       Offset((s.width - vsPainter.width) / 2,
