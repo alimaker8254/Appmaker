@@ -145,7 +145,7 @@ class _TopBar extends StatelessWidget {
               SizedBox(width: compact ? 7 : 13),
               GestureDetector(
                 onTap: () => Navigator.of(context).push(
-                  MaterialPageRoute(builder: (_) => SettingsScreen(club: widget.club)),
+                  MaterialPageRoute(builder: (_) => SettingsScreen(club: club)),
                 ),
                 child: Icon(Icons.settings, color: const Color(0xFF00BFFF), size: compact ? 19 : 25),
               ),
