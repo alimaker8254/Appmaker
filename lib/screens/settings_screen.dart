@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../models/club.dart';
+import '../services/game_music.dart';
 
 class SettingsScreen extends StatefulWidget {
   final Club club;
@@ -11,7 +12,7 @@ class SettingsScreen extends StatefulWidget {
 }
 
 class _SettingsScreenState extends State<SettingsScreen> {
-  double _musicVolume = 70;
+  double _musicVolume = GameMusic.instance.volume * 100;
 
   static const _green = Color(0xFF39FF14);
   static const _gold = Color(0xFFFFD700);
@@ -55,7 +56,10 @@ class _SettingsScreenState extends State<SettingsScreen> {
                             child: _MusicCard(
                               compact: compact,
                               volume: _musicVolume,
-                              onChanged: (v) => setState(() => _musicVolume = v),
+                              onChanged: (v) {
+                                setState(() => _musicVolume = v);
+                                GameMusic.instance.setVolume(v / 100);
+                              },
                             ),
                           ),
                           SizedBox(height: compact ? 16 : 28),
