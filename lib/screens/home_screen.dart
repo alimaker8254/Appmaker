@@ -260,27 +260,62 @@ class _MatchPainter extends CustomPainter {
     final symbolPaint = Paint()..color=const Color(0xFFFFE500)..style=PaintingStyle.fill;
     canvas.drawPath(bolt,symbolPaint);
 
+    // Restore the VS label in the exact visual gap between the two shields.
+    final vsPainter = TextPainter(
+      text: TextSpan(
+        text: 'VS',
+        style: TextStyle(
+          color: const Color(0xFFFFE500),
+          fontSize: side * .245,
+          fontWeight: FontWeight.w900,
+          letterSpacing: -1.2,
+        ),
+      ),
+      textDirection: TextDirection.ltr,
+      textAlign: TextAlign.center,
+    )..layout(maxWidth: s.width * .22);
+    vsPainter.paint(
+      canvas,
+      Offset((s.width - vsPainter.width) / 2,
+          s.height * .49 - vsPainter.height / 2),
+    );
+
+    // A recognizable three-tongue flame silhouette; overall size is unchanged.
     final flame = Path()
-      ..moveTo(rightCenter.dx, rightCenter.dy - side*.25)
-      ..cubicTo(rightCenter.dx + side*.015, rightCenter.dy - side*.10,
-          rightCenter.dx + side*.19, rightCenter.dy - side*.055,
-          rightCenter.dx + side*.105, rightCenter.dy + side*.12)
-      ..cubicTo(rightCenter.dx + side*.075, rightCenter.dy + side*.245,
-          rightCenter.dx - side*.075, rightCenter.dy + side*.255,
-          rightCenter.dx - side*.14, rightCenter.dy + side*.12)
-      ..cubicTo(rightCenter.dx - side*.20, rightCenter.dy - side*.015,
-          rightCenter.dx - side*.035, rightCenter.dy - side*.11,
-          rightCenter.dx, rightCenter.dy - side*.25)
+      ..moveTo(rightCenter.dx - side*.145, rightCenter.dy + side*.19)
+      ..cubicTo(rightCenter.dx - side*.205, rightCenter.dy + side*.055,
+          rightCenter.dx - side*.115, rightCenter.dy - side*.045,
+          rightCenter.dx - side*.055, rightCenter.dy - side*.145)
+      ..cubicTo(rightCenter.dx - side*.045, rightCenter.dy - side*.075,
+          rightCenter.dx - side*.012, rightCenter.dy - side*.035,
+          rightCenter.dx + side*.012, rightCenter.dy - side*.105)
+      ..cubicTo(rightCenter.dx + side*.035, rightCenter.dy - side*.175,
+          rightCenter.dx + side*.065, rightCenter.dy - side*.215,
+          rightCenter.dx + side*.075, rightCenter.dy - side*.25)
+      ..cubicTo(rightCenter.dx + side*.105, rightCenter.dy - side*.155,
+          rightCenter.dx + side*.205, rightCenter.dy - side*.085,
+          rightCenter.dx + side*.18, rightCenter.dy + side*.065)
+      ..cubicTo(rightCenter.dx + side*.165, rightCenter.dy + side*.205,
+          rightCenter.dx + side*.075, rightCenter.dy + side*.255,
+          rightCenter.dx - side*.025, rightCenter.dy + side*.25)
+      ..cubicTo(rightCenter.dx - side*.105, rightCenter.dy + side*.245,
+          rightCenter.dx - side*.17, rightCenter.dy + side*.225,
+          rightCenter.dx - side*.145, rightCenter.dy + side*.19)
       ..close();
     canvas.drawPath(flame,symbolPaint);
+
+    // Warm inner tongue clarifies the fire shape without increasing its footprint.
     final innerFlame = Path()
-      ..moveTo(rightCenter.dx + side*.012, rightCenter.dy - side*.015)
-      ..cubicTo(rightCenter.dx + side*.085, rightCenter.dy + side*.075,
-          rightCenter.dx + side*.025, rightCenter.dy + side*.18,
-          rightCenter.dx - side*.035, rightCenter.dy + side*.13)
-      ..cubicTo(rightCenter.dx - side*.075, rightCenter.dy + side*.075,
-          rightCenter.dx - side*.005, rightCenter.dy + side*.035,
-          rightCenter.dx + side*.012, rightCenter.dy - side*.015)
+      ..moveTo(rightCenter.dx + side*.018, rightCenter.dy + side*.17)
+      ..cubicTo(rightCenter.dx - side*.075, rightCenter.dy + side*.17,
+          rightCenter.dx - side*.085, rightCenter.dy + side*.075,
+          rightCenter.dx - side*.025, rightCenter.dy - side*.015)
+      ..cubicTo(rightCenter.dx - side*.005, rightCenter.dy + side*.035,
+          rightCenter.dx + side*.035, rightCenter.dy + side*.045,
+          rightCenter.dx + side*.045, rightCenter.dy - side*.045)
+      ..cubicTo(rightCenter.dx + side*.12, rightCenter.dy + side*.045,
+          rightCenter.dx + side*.105, rightCenter.dy + side*.15,
+          rightCenter.dx + side*.018, rightCenter.dy + side*.17)
       ..close();
     canvas.drawPath(innerFlame,Paint()..color=const Color(0xFFFFF2A0));
   }
