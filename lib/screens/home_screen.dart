@@ -1,17 +1,35 @@
 import 'package:flutter/material.dart';
 import '../models/club.dart';
 import 'settings_screen.dart';
+import '../services/game_music.dart';
 
-class HomeScreen extends StatelessWidget {
+class HomeScreen extends StatefulWidget {
   final Club club;
   const HomeScreen({super.key, required this.club});
 
+  @override
+  State<HomeScreen> createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> {
   static const green = Color(0xFF39FF14);
   static const blue = Color(0xFF00BFFF);
   static const gold = Color(0xFFFFD700);
   static const purple = Color(0xFFB44CFF);
   static const cyan = Color(0xFF00F5E9);
   static const bg = Color(0xFF030805);
+
+  @override
+  void initState() {
+    super.initState();
+    GameMusic.instance.start();
+  }
+
+  @override
+  void dispose() {
+    GameMusic.instance.stop();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -43,7 +61,7 @@ class HomeScreen extends StatelessWidget {
                 padding: EdgeInsets.symmetric(horizontal: screen.width * .01, vertical: compact ? 4 : 7),
                 child: Column(
                   children: [
-                    SizedBox(height: compact ? 66 : 72, child: _TopBar(club: club, compact: compact)),
+                    SizedBox(height: compact ? 66 : 72, child: _TopBar(club: widget.club, compact: compact)),
                     const SizedBox(height: 12),
                     Expanded(
                       child: Column(
@@ -127,7 +145,7 @@ class _TopBar extends StatelessWidget {
               SizedBox(width: compact ? 7 : 13),
               GestureDetector(
                 onTap: () => Navigator.of(context).push(
-                  MaterialPageRoute(builder: (_) => SettingsScreen(club: club)),
+                  MaterialPageRoute(builder: (_) => SettingsScreen(club: widget.club)),
                 ),
                 child: Icon(Icons.settings, color: const Color(0xFF00BFFF), size: compact ? 19 : 25),
               ),
