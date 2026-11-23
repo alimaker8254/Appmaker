@@ -83,7 +83,7 @@ class _SettingsTopBar extends StatelessWidget {
   Widget build(BuildContext context) {
     final logo = club.networkLogo;
     return Container(
-      padding: EdgeInsets.symmetric(horizontal: compact ? 10 : 20, vertical: 4),
+      padding: EdgeInsets.symmetric(horizontal: compact ? 9 : 17, vertical: 4),
       decoration: BoxDecoration(
         color: const Color(0xFF0A1228),
         borderRadius: BorderRadius.circular(22),
@@ -100,20 +100,44 @@ class _SettingsTopBar extends StatelessWidget {
                 : Image.asset('assets/logos_png/${club.asset.replaceAll('.svg', '.png')}', fit: BoxFit.contain,
                     errorBuilder: (_, __, ___) => const SizedBox.shrink()),
           ),
-          SizedBox(width: compact ? 8 : 14),
-          Text('تنظیمات', style: TextStyle(fontFamily: 'Vazirmatn', color: Colors.white, fontWeight: FontWeight.bold, fontSize: compact ? 16 : 23)),
+          SizedBox(width: compact ? 7 : 13),
+          Text('تنظیمات', style: TextStyle(
+            fontFamily: 'Vazirmatn', color: Colors.white,
+            fontWeight: FontWeight.bold, fontSize: compact ? 16 : 23,
+          )),
           const Spacer(),
-          _SettingsResource(icon: Icons.diamond, value: '15', color: const Color(0xFFB44CFF), compact: compact),
-          SizedBox(width: compact ? 5 : 10),
-          _SettingsResource(icon: Icons.monetization_on, value: '250,000', color: const Color(0xFFFFD700), compact: compact),
-          SizedBox(width: compact ? 7 : 12),
           Text('Lv. 12', style: TextStyle(color: Colors.white, fontSize: compact ? 12 : 16, fontWeight: FontWeight.w600)),
-          const Spacer(),
-          IconButton(
-            tooltip: 'بازگشت',
-            onPressed: () => Navigator.of(context).pop(),
-            icon: Icon(Icons.arrow_back, color: const Color(0xFF00BFFF), size: compact ? 20 : 27),
+          SizedBox(width: compact ? 6 : 11),
+          SizedBox(
+            width: compact ? 82 : 150,
+            height: compact ? 13 : 17,
+            child: Container(
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(20),
+                border: Border.all(color: const Color(0xFF00BFFF), width: 1.3),
+              ),
+              padding: const EdgeInsets.all(2),
+              child: Align(
+                alignment: Alignment.centerLeft,
+                child: FractionallySizedBox(
+                  widthFactor: .60,
+                  child: DecoratedBox(
+                    decoration: BoxDecoration(
+                      color: const Color(0xFFFFD700),
+                      borderRadius: BorderRadius.circular(20),
+                      boxShadow: [BoxShadow(color: const Color(0xFFFFD700).withOpacity(.65), blurRadius: 8, spreadRadius: 1)],
+                    ),
+                  ),
+                ),
+              ),
+            ),
           ),
+          SizedBox(width: compact ? 7 : 13),
+          _SettingsResource(icon: Icons.monetization_on, value: '250,000', color: const Color(0xFFFFD700), compact: compact),
+          SizedBox(width: compact ? 5 : 9),
+          _SettingsResource(icon: Icons.diamond, value: '15', color: const Color(0xFFB44CFF), compact: compact),
+          SizedBox(width: compact ? 7 : 13),
+          Icon(Icons.settings, color: const Color(0xFF00BFFF), size: compact ? 20 : 27),
         ],
       ),
     );
