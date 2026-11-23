@@ -69,6 +69,8 @@ class MatchesScreen extends StatelessWidget {
                           x: _positions[i].$1,
                           y: _positions[i].$2,
                           cardWidth: (w * .115).clamp(104.0, 180.0),
+                          fieldWidth: w,
+                          fieldHeight: fieldHeight,
                           compact: compact,
                         ),
                     ],
@@ -133,7 +135,7 @@ class MatchesScreen extends StatelessWidget {
     (.31, .16), (.50, .135), (.70, .16),
     (.33, .47), (.50, .47), (.68, .47),
     (.205, .735), (.405, .755), (.61, .755), (.805, .735),
-    (.50, .965),
+    (.50, .92),
   ];
 }
 
@@ -146,19 +148,20 @@ class _SquadPlayer {
 
 class _StarterPosition extends StatelessWidget {
   final _SquadPlayer player;
-  final double x, y, cardWidth;
+  final double x, y, cardWidth, fieldWidth, fieldHeight;
   final bool compact;
-  const _StarterPosition({required this.player, required this.x, required this.y, required this.cardWidth, required this.compact});
+  const _StarterPosition({required this.player, required this.x, required this.y, required this.cardWidth,
+    required this.fieldWidth, required this.fieldHeight, required this.compact});
 
   @override
   Widget build(BuildContext context) {
     final cardHeight = cardWidth * .68;
     return Positioned(
-      left: MediaQuery.sizeOf(context).width * x - cardWidth / 2,
-      top: MediaQuery.sizeOf(context).height * .0 +
-          (MediaQuery.sizeOf(context).height * .0) +
-          (context.findRenderObject() is RenderBox ? 0 : 0),
-      child: const SizedBox.shrink(),
+      left: fieldWidth * x - cardWidth / 2,
+      top: fieldHeight * y - cardHeight / 2,
+      width: cardWidth,
+      height: cardHeight,
+      child: _SquadCard(player: player, compact: compact),
     );
   }
 }
