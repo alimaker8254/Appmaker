@@ -145,14 +145,10 @@ class _MatchesScreenState extends State<MatchesScreen> {
             final w = constraints.maxWidth;
             final h = constraints.maxHeight;
             final compact = h < 500;
-            final fieldHeight = h * .685;
-            final benchHeight = h * .185;
-            final fiveRows = _selected.lines.length == 5;
-            final cardWidth = (w * (fiveRows ? .085 : .103)).clamp(88.0, 168.0).toDouble();
+            final controlHeight = compact ? 92.0 : 116.0;
+            final fieldHeight = h - controlHeight;
+            final cardWidth = (w * .092).clamp(104.0, 150.0).toDouble();
             final cardHeight = cardWidth * .66;
-            final rowYs = fiveRows
-                ? const [ .12, .31, .50, .69, .88 ]
-                : const [ .16, .405, .65, .875 ];
             return Column(
               children: [
                 SizedBox(
@@ -162,15 +158,11 @@ class _MatchesScreenState extends State<MatchesScreen> {
                     clipBehavior: Clip.hardEdge,
                     children: [
                       Positioned.fill(child: CustomPaint(painter: _PitchPainter())),
-                      Positioned(
-                        left: w * .025, top: fieldHeight * .075,
-                        child: _FormationBadge(label: _selected.name, compact: compact, onTap: _chooseFormation),
-                      ),
                       for (var row = 0; row < _selected.lines.length; row++)
                         for (var col = 0; col < _selected.lines[row].length; col++)
                           Positioned(
                             left: _xForIndex(col, _selected.lines[row].length, w) - cardWidth / 2,
-                            top: fieldHeight * rowYs[row] - cardHeight / 2,
+                            top: fieldHeight * _rowY(row, _selected.lines.length) - cardHeight / 2,
                             width: cardWidth,
                             height: cardHeight,
                             child: _SquadCard(
@@ -182,49 +174,43 @@ class _MatchesScreenState extends State<MatchesScreen> {
                     ],
                   ),
                 ),
-                Container(
-                  height: benchHeight,
-                  margin: EdgeInsets.symmetric(horizontal: w * .03),
-                  padding: EdgeInsets.symmetric(horizontal: compact ? 8 : 14, vertical: compact ? 5 : 8),
-                  decoration: BoxDecoration(
-                    color: const Color(0xD905210D),
-                    borderRadius: BorderRadius.circular(28),
-                    border: Border.all(color: const Color(0xFF39FF14), width: 2.5),
-                    boxShadow: [BoxShadow(color: const Color(0xFF39FF14).withOpacity(.55), blurRadius: 18, spreadRadius: 2)],
-                  ),
-                  child: ListView.separated(
-                    scrollDirection: Axis.horizontal,
-                    reverse: true,
-                    itemCount: _bench.length,
-                    separatorBuilder: (_, __) => SizedBox(width: compact ? 8 : 15),
-                    itemBuilder: (context, index) => SizedBox(
-                      width: (w * .105).clamp(92.0, 158.0).toDouble(),
-                      child: _SquadCard(player: _bench[index], compact: true, showPosition: true),
-                    ),
-                  ),
-                ),
-                Expanded(
-                  child: Center(
-                    child: SizedBox(
-                      width: (w * .28).clamp(230.0, 430.0),
-                      height: compact ? 46 : 62,
-                      child: ElevatedButton(
-                        onPressed: () => ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(content: Text('شروع مسابقه به‌زودی فعال می‌شود', textDirection: TextDirection.rtl)),
+                SizedBox(
+                  height: controlHeight,
+                  child: Padding(
+                    padding: EdgeInsets.symmetric(horizontal: compact ? 7 : 14, vertical: compact ? 4 : 8),
+                    child: Row(
+                      children: [
+                        _StartControl(compact: compact),
+                        SizedBox(width: compact ? 7 : 12),
+                        Expanded(
+                          child: Container(
+                            height: double.infinity,
+                            padding: EdgeInsets.symmetric(horizontal: compact ? 5 : 10, vertical: compact ? 4 : 7),
+                            decoration: BoxDecoration(
+                              color: const Color(0xD905210D),
+                              borderRadius: BorderRadius.circular(24),
+                              border: Border.all(color: const Color(0xFF39FF14), width: 2.5),
+                              boxShadow: [BoxShadow(color: const Color(0xFF39FF14).withOpacity(.48), blurRadius: 15, spreadRadius: 1)],
+                            ),
+                            child: ListView.separated(
+                              scrollDirection: Axis.horizontal,
+                              reverse: true,
+                              itemCount: _bench.length,
+                              separatorBuilder: (_, __) => SizedBox(width: compact ? 6 : 10),
+                              itemBuilder: (context, index) => SizedBox(
+                                width: (w * .095).clamp(88.0, 132.0).toDouble(),
+                                child: _SquadCard(player: _bench[index], compact: true, showPosition: true),
+                              ),
+                            ),
+                          ),
                         ),
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: const Color(0xFF075DFF),
-                          foregroundColor: Colors.white,
-                          elevation: 12,
-                          shadowColor: const Color(0xFF00CFFF),
-                          shape: const StadiumBorder(side: BorderSide(color: Color(0xFF00DFFF), width: 2.5)),
+                        SizedBox(width: compact ? 7 : 12),
+                        _FormationControl(
+                          label: _selected.name,
+                          compact: compact,
+                          onTap: _chooseFormation,
                         ),
-                        child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-                          Icon(Icons.play_arrow, size: compact ? 29 : 38),
-                          SizedBox(width: compact ? 5 : 10),
-                          Text('Start Match', style: TextStyle(fontSize: compact ? 18 : 26, fontWeight: FontWeight.bold)),
-                        ]),
-                      ),
+                      ],
                     ),
                   ),
                 ),
@@ -234,6 +220,14 @@ class _MatchesScreenState extends State<MatchesScreen> {
         ),
       ),
     );
+  }
+
+  double _rowY(int row, int count) {
+    if (count == 1) return .50;
+    // Evenly spaced formation bands: forwards, midfield, defence, goalkeeper.
+    const top = .13;
+    const bottom = .87;
+    return top + (bottom - top) * row / (count - 1);
   }
 
   // Keep all cards within the playable width and distribute each line evenly.
@@ -272,33 +266,57 @@ class _SquadCard extends StatelessWidget {
       decoration: BoxDecoration(
         gradient: const LinearGradient(begin: Alignment.topLeft, end: Alignment.bottomRight,
           colors: [Color(0xFF103B5E), Color(0xFF07182A), Color(0xFF020B16)]),
-        borderRadius: BorderRadius.circular(18),
+        borderRadius: BorderRadius.circular(17),
         border: Border.all(color: cyan, width: 2),
-        boxShadow: [BoxShadow(color: cyan.withOpacity(.55), blurRadius: 12, spreadRadius: 1)],
+        boxShadow: [BoxShadow(color: cyan.withOpacity(.48), blurRadius: 10, spreadRadius: 1)],
       ),
       child: Column(
         children: [
           Expanded(
             child: Padding(
-              padding: const EdgeInsets.fromLTRB(7, 3, 7, 0),
-              child: Row(children: [
-                Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, mainAxisAlignment: MainAxisAlignment.center, children: [
-                  FittedBox(fit: BoxFit.scaleDown, alignment: Alignment.centerLeft,
-                    child: Text('${player.rating}', style: TextStyle(color: Colors.white, fontSize: compact ? 19 : 25, fontWeight: FontWeight.w900))),
-                  FittedBox(fit: BoxFit.scaleDown, alignment: Alignment.centerLeft,
-                    child: Text(player.position, style: TextStyle(color: const Color(0xFFFFE500), fontSize: compact ? 16 : 20, fontWeight: FontWeight.w900))),
-                ])),
-                Expanded(child: Icon(Icons.person, color: Colors.white.withOpacity(.92), size: compact ? 47 : 64)),
-              ]),
+              padding: const EdgeInsets.fromLTRB(7, 4, 7, 2),
+              child: Row(
+                children: [
+                  Expanded(
+                    flex: 5,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        FittedBox(
+                          fit: BoxFit.scaleDown,
+                          alignment: Alignment.centerLeft,
+                          child: Text('${player.rating}',
+                            style: TextStyle(color: Colors.white, fontSize: compact ? 20 : 25, height: 1.0, fontWeight: FontWeight.w900)),
+                        ),
+                        const SizedBox(height: 4),
+                        if (showPosition)
+                          FittedBox(
+                            fit: BoxFit.scaleDown,
+                            alignment: Alignment.centerLeft,
+                            child: Text(player.position,
+                              style: TextStyle(color: const Color(0xFFFFE500), fontSize: compact ? 16 : 20, height: 1.0, fontWeight: FontWeight.w900)),
+                          ),
+                      ],
+                    ),
+                  ),
+                  Expanded(
+                    flex: 4,
+                    child: Icon(Icons.person, color: Colors.white.withOpacity(.92), size: compact ? 42 : 55),
+                  ),
+                ],
+              ),
             ),
           ),
           Container(
             width: double.infinity,
-            padding: EdgeInsets.symmetric(vertical: compact ? 2 : 4, horizontal: 3),
-            decoration: const BoxDecoration(color: Color(0xE8071828), borderRadius: BorderRadius.vertical(bottom: Radius.circular(15))),
+            padding: EdgeInsets.symmetric(vertical: compact ? 3 : 5, horizontal: 3),
+            decoration: const BoxDecoration(color: Color(0xF2071828),
+              borderRadius: BorderRadius.vertical(bottom: Radius.circular(14))),
             alignment: Alignment.center,
             child: FittedBox(fit: BoxFit.scaleDown, child: Text(player.name, maxLines: 1,
-              style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: compact ? 12 : 15))),
+              style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: compact ? 12 : 14))),
           ),
         ],
       ),
@@ -306,30 +324,55 @@ class _SquadCard extends StatelessWidget {
   }
 }
 
-class _FormationBadge extends StatelessWidget {
+class _StartControl extends StatelessWidget {
+  final bool compact;
+  const _StartControl({required this.compact});
+  @override
+  Widget build(BuildContext context) => SizedBox(
+    width: compact ? 70 : 86,
+    height: compact ? 62 : 82,
+    child: ElevatedButton(
+      onPressed: () => ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('شروع مسابقه به‌زودی فعال می‌شود', textDirection: TextDirection.rtl)),
+      ),
+      style: ElevatedButton.styleFrom(
+        padding: EdgeInsets.zero,
+        backgroundColor: const Color(0xFF075DFF),
+        foregroundColor: Colors.white,
+        elevation: 9,
+        shadowColor: const Color(0xFF00CFFF),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(18),
+          side: const BorderSide(color: Color(0xFF00DFFF), width: 2.2)),
+      ),
+      child: Text('START', style: TextStyle(fontSize: compact ? 15 : 17, fontWeight: FontWeight.w900)),
+    ),
+  );
+}
+
+class _FormationControl extends StatelessWidget {
   final String label;
   final bool compact;
   final VoidCallback onTap;
-  const _FormationBadge({required this.label, required this.compact, required this.onTap});
-
+  const _FormationControl({required this.label, required this.compact, required this.onTap});
   @override
   Widget build(BuildContext context) => Material(
     color: Colors.transparent,
     child: InkWell(
-      borderRadius: BorderRadius.circular(25),
+      borderRadius: BorderRadius.circular(18),
       onTap: onTap,
       child: Container(
-        width: compact ? 100 : 145,
-        height: compact ? 86 : 126,
+        width: compact ? 76 : 94,
+        height: compact ? 62 : 82,
         decoration: BoxDecoration(
           color: const Color(0xE9051B0C),
-          borderRadius: BorderRadius.circular(25),
-          border: Border.all(color: const Color(0xFF39FF14), width: 2.5),
-          boxShadow: [BoxShadow(color: const Color(0xFF39FF14).withOpacity(.55), blurRadius: 18, spreadRadius: 1)],
+          borderRadius: BorderRadius.circular(18),
+          border: Border.all(color: const Color(0xFF39FF14), width: 2.2),
+          boxShadow: [BoxShadow(color: const Color(0xFF39FF14).withOpacity(.48), blurRadius: 12, spreadRadius: 1)],
         ),
         child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
-          Text(label, style: TextStyle(color: Colors.white, fontSize: compact ? 23 : 34, fontWeight: FontWeight.bold)),
-          Icon(Icons.sports_soccer, color: Colors.white, size: compact ? 37 : 54),
+          FittedBox(fit: BoxFit.scaleDown, child: Text(label,
+            style: TextStyle(color: Colors.white, fontSize: compact ? 16 : 19, fontWeight: FontWeight.bold))),
+          Icon(Icons.sports_soccer, color: Colors.white, size: compact ? 25 : 31),
         ]),
       ),
     ),
