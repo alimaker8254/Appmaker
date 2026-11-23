@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:url_launcher/url_launcher.dart';
 import '../models/club.dart';
 
 class SettingsScreen extends StatefulWidget {
@@ -243,9 +244,15 @@ class _TelegramCard extends StatelessWidget {
       child: Row(
         children: [
           GestureDetector(
-            onTap: () => ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(content: Text('لینک کانال تلگرام هنوز در تنظیمات پروژه ثبت نشده است.')),
-            ),
+            onTap: () async {
+              final uri = Uri.parse('https://t.me/+BoZdn8swHfc3MzVk');
+              final opened = await launchUrl(uri, mode: LaunchMode.externalApplication);
+              if (!opened && context.mounted) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(content: Text('باز کردن لینک تلگرام ممکن نشد.')),
+                );
+              }
+            },
             child: Container(
               padding: EdgeInsets.symmetric(horizontal: MediaQuery.sizeOf(context).height < 380 ? 16 : 28, vertical: MediaQuery.sizeOf(context).height < 380 ? 12 : 22),
               decoration: BoxDecoration(
