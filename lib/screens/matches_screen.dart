@@ -147,8 +147,21 @@ class _MatchesScreenState extends State<MatchesScreen> {
             final compact = h < 500;
             final controlHeight = compact ? 92.0 : 116.0;
             final fieldHeight = h - controlHeight;
-            final denseFormation = _selected.lines.length == 5 || _selected.lines.any((line) => line.length >= 5);
-            final cardWidth = (w * (denseFormation ? .080 : .092)).clamp(denseFormation ? 94.0 : 104.0, denseFormation ? 128.0 : 150.0).toDouble();
+            // Size the on-pitch cards from BOTH available width and the
+            // vertical lane spacing. This prevents collisions in 4-2-3-1
+            // (five rows) and keeps five-player lines inside the pitch.
+            final rowCount = _selected.lines.length;
+            final maxPlayersInLine = _selected.lines.fold<int>(
+              1, (maximum, line) => line.length > maximum ? line.length : maximum,
+            );
+            const pitchTop = .13;
+            const pitchBottom = .89;
+            final rowGap = rowCount <= 1 ? fieldHeight : fieldHeight * (pitchBottom - pitchTop) / (rowCount - 1);
+            final verticalCardWidth = rowGap * .76 / .66;
+            final horizontalCardWidth = (w * .78 - (maxPlayersInLine - 1) * w * .018) / maxPlayersInLine;
+            final cardWidth = verticalCardWidth.clamp(54.0, 150.0).toDouble() < horizontalCardWidth
+                ? verticalCardWidth.clamp(54.0, 150.0).toDouble()
+                : horizontalCardWidth;
             final cardHeight = cardWidth * .66;
             return Column(
               children: [
@@ -225,18 +238,17 @@ class _MatchesScreenState extends State<MatchesScreen> {
 
   double _rowY(int row, int count) {
     if (count == 1) return .50;
-    // Evenly spaced formation bands: forwards, midfield, defence, goalkeeper.
+    // Separate every tactical line; the goalkeeper is always the deepest row.
     const top = .13;
-    const bottom = .87;
+    const bottom = .89;
     return top + (bottom - top) * row / (count - 1);
   }
 
-  // Keep all cards within the playable width and distribute each line evenly.
+  // Symmetric lanes with enough room for the widest line (up to five players).
   double _xForIndex(int index, int count, double width) {
     if (count == 1) return width * .50;
-    // Keep wide horizontal lanes so even five-player lines have visible gaps.
-    const left = .19;
-    const right = .81;
+    const left = .12;
+    const right = .88;
     return width * (left + (right - left) * index / (count - 1));
   }
 }
