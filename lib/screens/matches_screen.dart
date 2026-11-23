@@ -202,8 +202,8 @@ class _MatchesScreenState extends State<MatchesScreen> {
                               itemCount: _bench.length,
                               separatorBuilder: (_, __) => SizedBox(width: compact ? 6 : 10),
                               itemBuilder: (context, index) => SizedBox(
-                                width: (w * .095).clamp(88.0, 132.0).toDouble(),
-                                child: _SquadCard(player: _bench[index], compact: true, showPosition: true),
+                                width: (w * .105).clamp(112.0, 140.0).toDouble(),
+                                child: _SquadCard(player: _bench[index], compact: false, showPosition: true),
                               ),
                             ),
                           ),
@@ -301,26 +301,28 @@ class _SquadCard extends StatelessWidget {
                     child: Icon(Icons.person, color: Colors.white.withOpacity(.92), size: compact ? 42 : 55),
                   ),
                   Expanded(
-                    flex: 5,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.end,
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      mainAxisSize: MainAxisSize.min,
+                    flex: 6,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
-                        FittedBox(
-                          fit: BoxFit.scaleDown,
-                          alignment: Alignment.centerRight,
-                          child: Text('${player.rating}',
-                            style: TextStyle(color: Colors.white, fontSize: compact ? 20 : 25, height: 1.0, fontWeight: FontWeight.w900)),
-                        ),
-                        const SizedBox(height: 4),
-                        if (showPosition)
-                          FittedBox(
+                        Flexible(
+                          child: FittedBox(
                             fit: BoxFit.scaleDown,
-                            alignment: Alignment.centerRight,
-                            child: Text(player.position,
-                              style: TextStyle(color: const Color(0xFFFFE500), fontSize: compact ? 16 : 20, height: 1.0, fontWeight: FontWeight.w900)),
+                            child: Text('${player.rating}',
+                              style: TextStyle(color: Colors.white, fontSize: compact ? 20 : 25, height: 1.0, fontWeight: FontWeight.w900)),
                           ),
+                        ),
+                        if (showPosition) ...[
+                          SizedBox(width: compact ? 7 : 9),
+                          Flexible(
+                            child: FittedBox(
+                              fit: BoxFit.scaleDown,
+                              child: Text(player.position,
+                                style: TextStyle(color: const Color(0xFFFFE500), fontSize: compact ? 16 : 20, height: 1.0, fontWeight: FontWeight.w900)),
+                            ),
+                          ),
+                        ],
                       ],
                     ),
                   ),
