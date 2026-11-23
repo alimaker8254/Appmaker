@@ -59,7 +59,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                           ),
                           SizedBox(height: compact ? 16 : 28),
                           const Expanded(flex: 1, child: _TelegramCard()),
-                          const Spacer(flex: 1),
+
                         ],
                       ),
                     ),
