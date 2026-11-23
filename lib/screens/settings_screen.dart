@@ -92,27 +92,6 @@ class _SettingsTopBar extends StatelessWidget {
       ),
       child: Row(
         children: [
-          IconButton(
-            tooltip: 'بازگشت',
-            onPressed: () => Navigator.of(context).pop(),
-            icon: Icon(Icons.arrow_back, color: const Color(0xFF00BFFF), size: compact ? 20 : 27),
-          ),
-          const Spacer(),
-          Text('Lv. 12', style: TextStyle(color: Colors.white, fontSize: compact ? 12 : 16, fontWeight: FontWeight.w600)),
-          SizedBox(width: compact ? 7 : 12),
-          _SettingsResource(icon: Icons.monetization_on, value: '250,000', color: const Color(0xFFFFD700), compact: compact),
-          SizedBox(width: compact ? 5 : 10),
-          _SettingsResource(icon: Icons.diamond, value: '15', color: const Color(0xFFB44CFF), compact: compact),
-          const Spacer(),
-          Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.end,
-            children: [
-              Text('تنظیمات', style: TextStyle(fontFamily: 'Vazirmatn', color: Colors.white, fontWeight: FontWeight.bold, fontSize: compact ? 16 : 23)),
-              if (!compact) const SizedBox(height: 1),
-            ],
-          ),
-          SizedBox(width: compact ? 8 : 14),
           SizedBox(
             width: compact ? 34 : 48,
             height: compact ? 38 : 52,
@@ -120,6 +99,20 @@ class _SettingsTopBar extends StatelessWidget {
                 ? Image.network(logo, fit: BoxFit.contain, errorBuilder: (_, __, ___) => const SizedBox.shrink())
                 : Image.asset('assets/logos_png/${club.asset.replaceAll('.svg', '.png')}', fit: BoxFit.contain,
                     errorBuilder: (_, __, ___) => const SizedBox.shrink()),
+          ),
+          SizedBox(width: compact ? 8 : 14),
+          Text('تنظیمات', style: TextStyle(fontFamily: 'Vazirmatn', color: Colors.white, fontWeight: FontWeight.bold, fontSize: compact ? 16 : 23)),
+          const Spacer(),
+          _SettingsResource(icon: Icons.diamond, value: '15', color: const Color(0xFFB44CFF), compact: compact),
+          SizedBox(width: compact ? 5 : 10),
+          _SettingsResource(icon: Icons.monetization_on, value: '250,000', color: const Color(0xFFFFD700), compact: compact),
+          SizedBox(width: compact ? 7 : 12),
+          Text('Lv. 12', style: TextStyle(color: Colors.white, fontSize: compact ? 12 : 16, fontWeight: FontWeight.w600)),
+          const Spacer(),
+          IconButton(
+            tooltip: 'بازگشت',
+            onPressed: () => Navigator.of(context).pop(),
+            icon: Icon(Icons.arrow_back, color: const Color(0xFF00BFFF), size: compact ? 20 : 27),
           ),
         ],
       ),
@@ -164,20 +157,17 @@ class _MusicCard extends StatelessWidget {
       ),
       child: Row(
         children: [
-          Icon(Icons.volume_up_rounded, color: const Color(0xFFFFD21A), size: compact ? 43 : 70),
-          SizedBox(width: compact ? 14 : 30),
-          Expanded(
-            flex: 3,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text('صدای موسیقی بازی', maxLines: 1, style: TextStyle(fontFamily: 'Vazirmatn', color: Colors.white, fontSize: compact ? 15 : 27, fontWeight: FontWeight.bold)),
-                Text('میزان صدای موسیقی را تنظیم کنید', maxLines: 1, style: TextStyle(fontFamily: 'Vazirmatn', color: const Color(0xFFD9D9D9), fontSize: compact ? 10 : 17)),
-              ],
+          Container(
+            width: compact ? 68 : 138,
+            height: compact ? 40 : 76,
+            alignment: Alignment.center,
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(50),
+              border: Border.all(color: const Color(0xFFFFD700), width: 2),
             ),
+            child: Text('${volume.round()}%', style: TextStyle(color: Colors.white, fontSize: compact ? 16 : 30, fontWeight: FontWeight.bold)),
           ),
-          SizedBox(width: compact ? 10 : 24),
+          SizedBox(width: compact ? 10 : 28),
           Expanded(
             flex: 4,
             child: SliderTheme(
@@ -193,17 +183,20 @@ class _MusicCard extends StatelessWidget {
               child: Slider(value: volume, min: 0, max: 100, onChanged: onChanged),
             ),
           ),
-          SizedBox(width: compact ? 10 : 28),
-          Container(
-            width: compact ? 68 : 138,
-            height: compact ? 40 : 76,
-            alignment: Alignment.center,
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(50),
-              border: Border.all(color: const Color(0xFFFFD700), width: 2),
+          SizedBox(width: compact ? 10 : 24),
+          Expanded(
+            flex: 3,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text('صدای موسیقی بازی', maxLines: 1, style: TextStyle(fontFamily: 'Vazirmatn', color: Colors.white, fontSize: compact ? 15 : 27, fontWeight: FontWeight.bold)),
+                Text('میزان صدای موسیقی را تنظیم کنید', maxLines: 1, style: TextStyle(fontFamily: 'Vazirmatn', color: const Color(0xFFD9D9D9), fontSize: compact ? 10 : 17)),
+              ],
             ),
-            child: Text('${volume.round()}%', style: TextStyle(color: Colors.white, fontSize: compact ? 16 : 30, fontWeight: FontWeight.bold)),
           ),
+          SizedBox(width: compact ? 14 : 30),
+          Icon(Icons.volume_up_rounded, color: const Color(0xFFFFD21A), size: compact ? 43 : 70),
         ],
       ),
     );
@@ -225,18 +218,26 @@ class _TelegramCard extends StatelessWidget {
       ),
       child: Row(
         children: [
-          Container(
-            width: MediaQuery.sizeOf(context).height < 380 ? 62 : 116,
-            height: MediaQuery.sizeOf(context).height < 380 ? 62 : 116,
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              gradient: const LinearGradient(colors: [Color(0xFF16B9FF), Color(0xFF0069E8)]),
-              border: Border.all(color: const Color(0xFF18D7FF), width: 2),
-              boxShadow: [BoxShadow(color: const Color(0xFF00AFFF).withOpacity(.6), blurRadius: 18, spreadRadius: 2)],
+          GestureDetector(
+            onTap: () => ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(content: Text('لینک کانال تلگرام هنوز در تنظیمات پروژه ثبت نشده است.')),
             ),
-            child: Icon(Icons.send_rounded, color: Colors.white, size: MediaQuery.sizeOf(context).height < 380 ? 34 : 66),
+            child: Container(
+              padding: EdgeInsets.symmetric(horizontal: MediaQuery.sizeOf(context).height < 380 ? 16 : 28, vertical: MediaQuery.sizeOf(context).height < 380 ? 12 : 22),
+              decoration: BoxDecoration(
+                gradient: const LinearGradient(colors: [Color(0xFF16B9FF), Color(0xFF0069E8)]),
+                borderRadius: BorderRadius.circular(50),
+                border: Border.all(color: const Color(0xFF25D9FF), width: 1.5),
+                boxShadow: [BoxShadow(color: const Color(0xFF008CFF).withOpacity(.55), blurRadius: 16, spreadRadius: 2)],
+              ),
+              child: Row(mainAxisSize: MainAxisSize.min, children: [
+                const Icon(Icons.send_rounded, color: Colors.white, size: 25),
+                const SizedBox(width: 12),
+                Text('ورود به کانال تلگرام', style: TextStyle(fontFamily: 'Vazirmatn', color: Colors.white, fontSize: MediaQuery.sizeOf(context).height < 380 ? 11 : 19, fontWeight: FontWeight.bold)),
+              ]),
+            ),
           ),
-          SizedBox(width: MediaQuery.sizeOf(context).height < 380 ? 18 : 36),
+          SizedBox(width: MediaQuery.sizeOf(context).height < 380 ? 12 : 28),
           Expanded(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -248,20 +249,17 @@ class _TelegramCard extends StatelessWidget {
               ],
             ),
           ),
-          SizedBox(width: MediaQuery.sizeOf(context).height < 380 ? 12 : 28),
+          SizedBox(width: MediaQuery.sizeOf(context).height < 380 ? 18 : 36),
           Container(
-            padding: EdgeInsets.symmetric(horizontal: MediaQuery.sizeOf(context).height < 380 ? 16 : 28, vertical: MediaQuery.sizeOf(context).height < 380 ? 12 : 22),
+            width: MediaQuery.sizeOf(context).height < 380 ? 62 : 116,
+            height: MediaQuery.sizeOf(context).height < 380 ? 62 : 116,
             decoration: BoxDecoration(
+              shape: BoxShape.circle,
               gradient: const LinearGradient(colors: [Color(0xFF16B9FF), Color(0xFF0069E8)]),
-              borderRadius: BorderRadius.circular(50),
-              border: Border.all(color: const Color(0xFF25D9FF), width: 1.5),
-              boxShadow: [BoxShadow(color: const Color(0xFF008CFF).withOpacity(.55), blurRadius: 16, spreadRadius: 2)],
+              border: Border.all(color: const Color(0xFF18D7FF), width: 2),
+              boxShadow: [BoxShadow(color: const Color(0xFF00AFFF).withOpacity(.6), blurRadius: 18, spreadRadius: 2)],
             ),
-            child: Row(mainAxisSize: MainAxisSize.min, children: [
-              const Icon(Icons.send_rounded, color: Colors.white, size: 25),
-              const SizedBox(width: 12),
-              Text('ورود به کانال تلگرام', style: TextStyle(fontFamily: 'Vazirmatn', color: Colors.white, fontSize: MediaQuery.sizeOf(context).height < 380 ? 11 : 19, fontWeight: FontWeight.bold)),
-            ]),
+            child: Icon(Icons.send_rounded, color: Colors.white, size: MediaQuery.sizeOf(context).height < 380 ? 34 : 66),
           ),
         ],
       ),
