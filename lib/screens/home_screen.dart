@@ -311,26 +311,25 @@ class _TeamArt extends StatelessWidget {
 class _PeoplePainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size s) {
-    final p=Paint()..color=Colors.white;
+    final white=Paint()..color=Colors.white;
     void person(double x,double scale) {
-      final head=s.height*.105*scale;
-      final headY=s.height*.24;
-      canvas.drawCircle(Offset(x,headY),head,p);
-      final shoulderY=s.height*.43;
+      final headR=s.height*.115*scale;
+      final headCenter=Offset(x,s.height*.25);
+      canvas.drawCircle(headCenter,headR,white);
+      final shoulder=s.height*.48;
       final body=Path()
-        ..moveTo(x-head*1.10,shoulderY)
-        ..quadraticBezierTo(x-head*2.00,shoulderY+head*.18,x-head*2.05,s.height*.84)
-        ..quadraticBezierTo(x,s.height*.91,x+head*2.05,s.height*.84)
-        ..quadraticBezierTo(x+head*2.00,shoulderY+head*.18,x+head*1.10,shoulderY)
-        ..quadraticBezierTo(x,shoulderY-head*.25,x-head*1.10,shoulderY)
+        ..moveTo(x-headR*1.05,shoulder)
+        ..cubicTo(x-headR*1.85,shoulder+headR*.10,x-headR*2.05,s.height*.68,x-headR*2.10,s.height*.88)
+        ..quadraticBezierTo(x,s.height*.96,x+headR*2.10,s.height*.88)
+        ..cubicTo(x+headR*2.05,s.height*.68,x+headR*1.85,shoulder+headR*.10,x+headR*1.05,shoulder)
+        ..quadraticBezierTo(x,shoulder-headR*.24,x-headR*1.05,shoulder)
         ..close();
-      canvas.drawPath(body,p);
-      final neck=Rect.fromLTWH(x-head*.42,headY+head*.82,head*.84,head*.48);
-      canvas.drawRect(neck,p);
+      canvas.drawPath(body,white);
     }
-    person(s.width*.22,.82);
-    person(s.width*.50,1.12);
-    person(s.width*.78,.82);
+    // Three compact person silhouettes, with a slightly larger central player.
+    person(s.width*.32,.88);
+    person(s.width*.50,1.08);
+    person(s.width*.68,.88);
   }
   @override
   bool shouldRepaint(covariant CustomPainter oldDelegate)=>false;
@@ -344,32 +343,45 @@ class _TacticsArt extends StatelessWidget {
 class _TacticsBoardPainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size s) {
-    final white = Paint()..color=Colors.white..style=PaintingStyle.stroke..strokeWidth=2.5..strokeJoin=StrokeJoin.round;
-    final fill = Paint()..color=Colors.white;
-    final rect = Rect.fromLTWH(s.width*.10,s.height*.08,s.width*.80,s.height*.84);
-    final field = RRect.fromRectAndRadius(rect,const Radius.circular(8));
-    canvas.drawRRect(field,white);
-    canvas.drawLine(Offset(rect.left,rect.center.dy),Offset(rect.right,rect.center.dy),white);
-    canvas.drawCircle(rect.center, s.height*.105, white);
-    canvas.drawCircle(rect.center, s.height*.012, fill);
-    final boxW=rect.width*.42, boxH=rect.height*.17;
-    canvas.drawRect(Rect.fromLTWH(rect.center.dx-boxW/2,rect.top,boxW,boxH),white);
-    canvas.drawRect(Rect.fromLTWH(rect.center.dx-boxW/2,rect.bottom-boxH,boxW,boxH),white);
-    final six=rect.width*.25, smallH=rect.height*.085;
-    canvas.drawRect(Rect.fromLTWH(rect.center.dx-six/2,rect.top,six,smallH),white);
-    canvas.drawRect(Rect.fromLTWH(rect.center.dx-six/2,rect.bottom-smallH,six,smallH),white);
-    // 4-3-3: one goalkeeper, four defenders, three midfielders, three forwards.
-    final players = <Offset>[
-      Offset(.50,.91), // goalkeeper
-      Offset(.17,.73), Offset(.39,.76), Offset(.61,.76), Offset(.83,.73), // back four
-      Offset(.27,.53), Offset(.50,.57), Offset(.73,.53), // midfield three
-      Offset(.27,.30), Offset(.50,.25), Offset(.73,.30), // front three
+    final line=Paint()..color=Colors.white..style=PaintingStyle.stroke..strokeWidth=2.4..strokeCap=StrokeCap.round..strokeJoin=StrokeJoin.round;
+    final solid=Paint()..color=Colors.white;
+    final field=Rect.fromLTWH(s.width*.105,s.height*.075,s.width*.79,s.height*.85);
+    canvas.drawRRect(RRect.fromRectAndRadius(field,const Radius.circular(9)),line);
+    canvas.drawLine(Offset(field.left,field.center.dy),Offset(field.right,field.center.dy),line);
+    canvas.drawCircle(field.center,s.height*.105,line);
+    canvas.drawCircle(field.center,s.height*.012,solid);
+    // Penalty areas and six-yard boxes on both ends.
+    final penaltyW=field.width*.19, penaltyH=field.height*.30;
+    final sixW=field.width*.085, sixH=field.height*.14;
+    canvas.drawRect(Rect.fromLTWH(field.left,field.center.dy-penaltyH/2,penaltyW,penaltyH),line);
+    canvas.drawRect(Rect.fromLTWH(field.right-penaltyW,field.center.dy-penaltyH/2,penaltyW,penaltyH),line);
+    canvas.drawRect(Rect.fromLTWH(field.left,field.center.dy-sixH/2,sixW,sixH),line);
+    canvas.drawRect(Rect.fromLTWH(field.right-sixW,field.center.dy-sixH/2,sixW,sixH),line);
+    // Formation markers are placed in three clear lines plus goalkeeper (4-3-3).
+    final rows=<List<double>>[
+      <double>[.50],                         // goalkeeper
+      <double>[.16,.39,.61,.84],            // four defenders
+      <double>[.27,.50,.73],                // three midfielders
+      <double>[.27,.50,.73],                // three forwards
     ];
-    final radius=s.height*.033;
-    for (int i=0;i<players.length;i++) {
-      final p=Offset(rect.left+rect.width*players[i].dx, rect.top+rect.height*players[i].dy);
-      canvas.drawCircle(p,radius,fill);
-      canvas.drawCircle(p,radius,Paint()..color=const Color(0xFF0A2442)..style=PaintingStyle.stroke..strokeWidth=1);
+    final yRows=<double>[.87,.66,.43,.20];
+    final tokenR=s.height*.036;
+    for(int row=0;row<rows.length;row++){
+      for(final x in rows[row]){
+        final center=Offset(field.left+field.width*x,field.top+field.height*yRows[row]);
+        canvas.drawCircle(center,tokenR+2,Paint()..color=const Color(0xFF06172C));
+        canvas.drawCircle(center,tokenR,solid);
+        canvas.drawCircle(center,tokenR,line..strokeWidth=1.1);
+      }
+    }
+    // Small forward movement arrows, subtle enough not to clutter the formation.
+    final arrow=Paint()..color=Colors.white.withOpacity(.8)..style=PaintingStyle.stroke..strokeWidth=1.5..strokeCap=StrokeCap.round;
+    for(final x in <double>[.27,.50,.73]){
+      final from=Offset(field.left+field.width*x,field.top+field.height*.31);
+      final to=Offset(from.dx,from.dy-s.height*.045);
+      canvas.drawLine(from,to,arrow);
+      canvas.drawLine(to,Offset(to.dx-s.width*.012,to.dy+s.height*.018),arrow);
+      canvas.drawLine(to,Offset(to.dx+s.width*.012,to.dy+s.height*.018),arrow);
     }
   }
   @override
@@ -385,25 +397,26 @@ class _CoachPlusPainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size s) {
     final white=Paint()..color=Colors.white;
-    final cx=s.width*.43, headR=s.height*.105;
+    final cx=s.width*.405, headR=s.height*.12;
     canvas.drawCircle(Offset(cx,s.height*.20),headR,white);
-    // Jacket silhouette with lapels, shoulders and a tapered torso.
+    // Slightly larger professional jacket silhouette.
     final jacket=Path()
-      ..moveTo(cx-headR*1.25,s.height*.39)
-      ..lineTo(cx-headR*2.65,s.height*.51)
-      ..lineTo(cx-headR*2.25,s.height*.88)
-      ..lineTo(cx+headR*2.25,s.height*.88)
-      ..lineTo(cx+headR*2.65,s.height*.51)
-      ..lineTo(cx+headR*1.25,s.height*.39)
-      ..lineTo(cx,s.height*.54)
+      ..moveTo(cx-headR*1.18,s.height*.39)
+      ..lineTo(cx-headR*2.75,s.height*.49)
+      ..quadraticBezierTo(cx-headR*3.0,s.height*.54,cx-headR*2.65,s.height*.90)
+      ..lineTo(cx+headR*2.65,s.height*.90)
+      ..quadraticBezierTo(cx+headR*3.0,s.height*.54,cx+headR*2.75,s.height*.49)
+      ..lineTo(cx+headR*1.18,s.height*.39)
+      ..lineTo(cx,s.height*.55)
       ..close();
     canvas.drawPath(jacket,white);
-    final lapel=Paint()..color=const Color(0xFF0B3518)..style=PaintingStyle.stroke..strokeWidth=2;
-    final left=Path()..moveTo(cx-headR*1.20,s.height*.41)..lineTo(cx-headR*.25,s.height*.68)..lineTo(cx-headR*.05,s.height*.53);
-    final right=Path()..moveTo(cx+headR*1.20,s.height*.41)..lineTo(cx+headR*.25,s.height*.68)..lineTo(cx+headR*.05,s.height*.53);
+    final lapel=Paint()..color=const Color(0xFF0B3518)..style=PaintingStyle.stroke..strokeWidth=2.1;
+    final left=Path()..moveTo(cx-headR*1.10,s.height*.405)..lineTo(cx-headR*.22,s.height*.68)..lineTo(cx-headR*.04,s.height*.54);
+    final right=Path()..moveTo(cx+headR*1.10,s.height*.405)..lineTo(cx+headR*.22,s.height*.68)..lineTo(cx+headR*.04,s.height*.54);
     canvas.drawPath(left,lapel); canvas.drawPath(right,lapel);
-    final plus=Paint()..color=const Color(0xFFFFFFFF)..strokeWidth=s.height*.095..strokeCap=StrokeCap.round;
-    final px=s.width*.78, py=s.height*.52, arm=s.height*.16;
+    // Plus is closer to the shoulder, with a visible gap.
+    final plus=Paint()..color=Colors.white..strokeWidth=s.height*.095..strokeCap=StrokeCap.round;
+    final px=s.width*.705, py=s.height*.53, arm=s.height*.155;
     canvas.drawLine(Offset(px-arm,py),Offset(px+arm,py),plus);
     canvas.drawLine(Offset(px,py-arm),Offset(px,py+arm),plus);
   }
