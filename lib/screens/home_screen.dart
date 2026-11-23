@@ -165,15 +165,25 @@ class _DashboardCard extends StatelessWidget {
       boxShadow: [BoxShadow(color: data.neon.withOpacity(.6), blurRadius: 20, spreadRadius: 3)],
     ),
     child: Stack(children: [
-      Padding(
-        padding: EdgeInsets.fromLTRB(compact ? 7 : 12, compact ? 5 : 9, compact ? 7 : 12, compact ? 27 : 38),
-        child: Column(children: [
-          Expanded(child: SizedBox.expand(child: data.art)),
-          FittedBox(fit: BoxFit.scaleDown, child: Text(data.fa, maxLines: 1,
-            style: TextStyle(fontFamily: 'Vazirmatn', color: Colors.white, fontSize: compact ? 13 : 18, fontWeight: FontWeight.bold))),
-          FittedBox(fit: BoxFit.scaleDown, child: Text(data.en, maxLines: 1,
-            style: TextStyle(fontFamily: 'Vazirmatn', color: const Color(0xFFD0D6DA), fontSize: compact ? 10 : 13))),
-        ]),
+      Positioned(
+        left: compact ? 7 : 12, right: compact ? 7 : 12,
+        top: compact ? 5 : 9, bottom: compact ? 48 : 62,
+        child: Center(
+          child: SizedBox.expand(child: data.art),
+        ),
+      ),
+      Positioned(
+        left: compact ? 8 : 14, right: compact ? 8 : 14,
+        bottom: compact ? 7 : 10,
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            FittedBox(fit: BoxFit.scaleDown, child: Text(data.fa, maxLines: 1,
+              style: TextStyle(fontFamily: 'Vazirmatn', color: Colors.white, fontSize: compact ? 13 : 18, fontWeight: FontWeight.bold))),
+            FittedBox(fit: BoxFit.scaleDown, child: Text(data.en, maxLines: 1,
+              style: TextStyle(fontFamily: 'Vazirmatn', color: const Color(0xFFD0D6DA), fontSize: compact ? 10 : 13))),
+          ],
+        ),
       ),
       Positioned(left: 0, bottom: 0, child: Container(
         width: compact ? 29 : 39, height: compact ? 25 : 34,
@@ -240,26 +250,29 @@ class _LeagueArt extends StatelessWidget {
 }
 class _TrophyPainter extends CustomPainter {
   @override
-  void paint(Canvas canvas,Size s){
-    final gold=Paint()..color=const Color(0xFFFFD500);
-    final edge=Paint()..color=const Color(0xFFFFE34D)..style=PaintingStyle.stroke..strokeWidth=3;
-    final cx=s.width*.5; final top=s.height*.02; final w=s.width*.205; final h=s.height*.90;
-    final cup=Path()
-      ..moveTo(cx-w*.72,top)..lineTo(cx+w*.72,top)
-      ..lineTo(cx+w*.60,top+h*.47)
-      ..quadraticBezierTo(cx+w*.42,top+h*.82,cx,top+h*.84)
-      ..quadraticBezierTo(cx-w*.42,top+h*.82,cx-w*.60,top+h*.47)..close();
-    canvas.drawPath(cup,gold); canvas.drawPath(cup,edge);
-    final handles=Path()
-      ..moveTo(cx-w*.70,top+h*.12)..lineTo(cx-w*1.18,top+h*.08)
-      ..quadraticBezierTo(cx-w*1.25,top+h*.56,cx-w*.57,top+h*.59)
-      ..moveTo(cx+w*.70,top+h*.12)..lineTo(cx+w*1.18,top+h*.08)
-      ..quadraticBezierTo(cx+w*1.25,top+h*.56,cx+w*.57,top+h*.59);
-    canvas.drawPath(handles,Paint()..color=const Color(0xFFFFD500)..style=PaintingStyle.stroke..strokeWidth=7..strokeCap=StrokeCap.round);
-    final stem=Rect.fromLTWH(cx-w*.16,top+h*.82,w*.32,h*.17);
-    canvas.drawRect(stem,gold);
-    final base=RRect.fromRectAndRadius(Rect.fromLTWH(cx-w*.55,top+h*.96,w*1.10,h*.12),const Radius.circular(5));
-    canvas.drawRRect(base,gold);
+  void paint(Canvas canvas, Size s) {
+    final gold = Paint()..color = const Color(0xFFFFD21A);
+    final shine = Paint()..color = const Color(0xFFFFEA75)..style = PaintingStyle.stroke..strokeWidth = 2;
+    final cx = s.width * .5;
+    final top = s.height * .16;
+    final cupW = s.width * .34;
+    final cupH = s.height * .55;
+    final bowl = Path()
+      ..moveTo(cx-cupW*.50, top)
+      ..lineTo(cx+cupW*.50, top)
+      ..lineTo(cx+cupW*.42, top+cupH*.55)
+      ..quadraticBezierTo(cx+cupW*.30, top+cupH*.95, cx, top+cupH)
+      ..quadraticBezierTo(cx-cupW*.30, top+cupH*.95, cx-cupW*.42, top+cupH*.55)
+      ..close();
+    canvas.drawPath(bowl, gold);
+    canvas.drawPath(bowl, shine);
+    final handle = Paint()..color=const Color(0xFFFFD21A)..style=PaintingStyle.stroke..strokeWidth=s.height*.075..strokeCap=StrokeCap.round;
+    final left = Path()..moveTo(cx-cupW*.43,top+s.height*.10)..cubicTo(cx-cupW*1.05,top-s.height*.02,cx-cupW*1.02,top+s.height*.52,cx-cupW*.43,top+s.height*.51);
+    final right = Path()..moveTo(cx+cupW*.43,top+s.height*.10)..cubicTo(cx+cupW*1.05,top-s.height*.02,cx+cupW*1.02,top+s.height*.52,cx+cupW*.43,top+s.height*.51);
+    canvas.drawPath(left,handle); canvas.drawPath(right,handle);
+    final stemTop=top+cupH*.90;
+    canvas.drawRRect(RRect.fromRectAndRadius(Rect.fromLTWH(cx-cupW*.12,stemTop,cupW*.24,s.height*.16),const Radius.circular(3)),gold);
+    canvas.drawRRect(RRect.fromRectAndRadius(Rect.fromLTWH(cx-cupW*.38,stemTop+s.height*.15,cupW*.76,s.height*.09),const Radius.circular(5)),gold);
   }
   @override
   bool shouldRepaint(covariant CustomPainter oldDelegate)=>false;
@@ -272,14 +285,18 @@ class _UpgradeArt extends StatelessWidget {
 }
 class _UpgradeBarsPainter extends CustomPainter {
   @override
-  void paint(Canvas canvas,Size s){
+  void paint(Canvas canvas, Size s) {
     final p=Paint()..color=Colors.white;
-    final widths=s.width*.085;
-    final heights=[s.height*.43,s.height*.68,s.height*.94];
+    final barW=s.width*.105;
+    final heights=[s.height*.38,s.height*.57,s.height*.76];
+    const gapFactor=.065;
+    final total=barW*3+s.width*gapFactor*2;
+    final left=(s.width-total)/2;
+    final baseline=s.height*.82;
     for(int i=0;i<3;i++){
-      final x=s.width*(.25+i*.22);
-      final rect=Rect.fromLTWH(x,s.height*.88-heights[i],widths,heights[i]);
-      canvas.drawRRect(RRect.fromRectAndRadius(rect,Radius.circular(widths*.22)),p);
+      final x=left+i*(barW+s.width*gapFactor);
+      final r=Rect.fromLTWH(x,baseline-heights[i],barW,heights[i]);
+      canvas.drawRRect(RRect.fromRectAndRadius(r,Radius.circular(barW*.22)),p);
     }
   }
   @override
@@ -293,22 +310,27 @@ class _TeamArt extends StatelessWidget {
 }
 class _PeoplePainter extends CustomPainter {
   @override
-  void paint(Canvas canvas,Size s){
+  void paint(Canvas canvas, Size s) {
     final p=Paint()..color=Colors.white;
-    void person(double x,double scale){
-      final headR=s.height*.205*scale;
-      final headY=s.height*.27;
-      canvas.drawCircle(Offset(x,headY),headR,p);
+    void person(double x,double scale) {
+      final head=s.height*.105*scale;
+      final headY=s.height*.24;
+      canvas.drawCircle(Offset(x,headY),head,p);
+      final shoulderY=s.height*.43;
       final body=Path()
-        ..moveTo(x-headR*1.75,s.height*.86)
-        ..lineTo(x-headR*1.48,s.height*.58)
-        ..quadraticBezierTo(x,s.height*.48,x+headR*1.48,s.height*.58)
-        ..lineTo(x+headR*1.75,s.height*.86)..close();
+        ..moveTo(x-head*1.10,shoulderY)
+        ..quadraticBezierTo(x-head*2.00,shoulderY+head*.18,x-head*2.05,s.height*.84)
+        ..quadraticBezierTo(x,s.height*.91,x+head*2.05,s.height*.84)
+        ..quadraticBezierTo(x+head*2.00,shoulderY+head*.18,x+head*1.10,shoulderY)
+        ..quadraticBezierTo(x,shoulderY-head*.25,x-head*1.10,shoulderY)
+        ..close();
       canvas.drawPath(body,p);
+      final neck=Rect.fromLTWH(x-head*.42,headY+head*.82,head*.84,head*.48);
+      canvas.drawRect(neck,p);
     }
-    person(s.width*.27,.78);
-    person(s.width*.50,1.25);
-    person(s.width*.73,.78);
+    person(s.width*.22,.82);
+    person(s.width*.50,1.12);
+    person(s.width*.78,.82);
   }
   @override
   bool shouldRepaint(covariant CustomPainter oldDelegate)=>false;
@@ -321,30 +343,34 @@ class _TacticsArt extends StatelessWidget {
 }
 class _TacticsBoardPainter extends CustomPainter {
   @override
-  void paint(Canvas canvas,Size s){
-    final line=Paint()..color=Colors.white..style=PaintingStyle.stroke..strokeWidth=3.2..strokeJoin=StrokeJoin.round;
-    final board=Path()
-      ..moveTo(s.width*.20,s.height*.16)
-      ..lineTo(s.width*.80,s.height*.16)
-      ..lineTo(s.width*.91,s.height*.83)
-      ..quadraticBezierTo(s.width*.92,s.height*.88,s.width*.86,s.height*.88)
-      ..lineTo(s.width*.14,s.height*.88)
-      ..quadraticBezierTo(s.width*.08,s.height*.88,s.width*.09,s.height*.83)
-      ..close();
-    canvas.drawPath(board,line);
-    final dot=Paint()..color=Colors.white;
-    final xs=[.30,.50,.70]; final ys=[.28,.49,.70];
-    for(final y in ys){for(final x in xs){canvas.drawCircle(Offset(s.width*x,s.height*y),s.height*.060,dot);}}
-    final box=Path()
-      ..moveTo(s.width*.20,s.height*.40)..lineTo(s.width*.29,s.height*.40)
-      ..lineTo(s.width*.27,s.height*.59)..lineTo(s.width*.18,s.height*.59)
-      ..close();
-    canvas.drawPath(box,line);
-    final box2=Path()
-      ..moveTo(s.width*.80,s.height*.40)..lineTo(s.width*.71,s.height*.40)
-      ..lineTo(s.width*.73,s.height*.59)..lineTo(s.width*.82,s.height*.59)
-      ..close();
-    canvas.drawPath(box2,line);
+  void paint(Canvas canvas, Size s) {
+    final white = Paint()..color=Colors.white..style=PaintingStyle.stroke..strokeWidth=2.5..strokeJoin=StrokeJoin.round;
+    final fill = Paint()..color=Colors.white;
+    final rect = Rect.fromLTWH(s.width*.10,s.height*.08,s.width*.80,s.height*.84);
+    final field = RRect.fromRectAndRadius(rect,const Radius.circular(8));
+    canvas.drawRRect(field,white);
+    canvas.drawLine(Offset(rect.left,rect.center.dy),Offset(rect.right,rect.center.dy),white);
+    canvas.drawCircle(rect.center, s.height*.105, white);
+    canvas.drawCircle(rect.center, s.height*.012, fill);
+    final boxW=rect.width*.42, boxH=rect.height*.17;
+    canvas.drawRect(Rect.fromLTWH(rect.center.dx-boxW/2,rect.top,boxW,boxH),white);
+    canvas.drawRect(Rect.fromLTWH(rect.center.dx-boxW/2,rect.bottom-boxH,boxW,boxH),white);
+    final six=rect.width*.25, smallH=rect.height*.085;
+    canvas.drawRect(Rect.fromLTWH(rect.center.dx-six/2,rect.top,six,smallH),white);
+    canvas.drawRect(Rect.fromLTWH(rect.center.dx-six/2,rect.bottom-smallH,six,smallH),white);
+    // 4-3-3: one goalkeeper, four defenders, three midfielders, three forwards.
+    final players = <Offset>[
+      Offset(.50,.91), // goalkeeper
+      Offset(.17,.73), Offset(.39,.76), Offset(.61,.76), Offset(.83,.73), // back four
+      Offset(.27,.53), Offset(.50,.57), Offset(.73,.53), // midfield three
+      Offset(.27,.30), Offset(.50,.25), Offset(.73,.30), // front three
+    ];
+    final radius=s.height*.033;
+    for (int i=0;i<players.length;i++) {
+      final p=Offset(rect.left+rect.width*players[i].dx, rect.top+rect.height*players[i].dy);
+      canvas.drawCircle(p,radius,fill);
+      canvas.drawCircle(p,radius,Paint()..color=const Color(0xFF0A2442)..style=PaintingStyle.stroke..strokeWidth=1);
+    }
   }
   @override
   bool shouldRepaint(covariant CustomPainter oldDelegate)=>false;
@@ -357,20 +383,29 @@ class _CoachArt extends StatelessWidget {
 }
 class _CoachPlusPainter extends CustomPainter {
   @override
-  void paint(Canvas canvas,Size s){
+  void paint(Canvas canvas, Size s) {
     final white=Paint()..color=Colors.white;
-    final cx=s.width*.39; final r=s.height*.205;
-    canvas.drawCircle(Offset(cx,s.height*.25),r,white);
-    final torso=Path()
-      ..moveTo(cx-r*1.75,s.height*.87)
-      ..lineTo(cx-r*1.48,s.height*.55)
-      ..quadraticBezierTo(cx,s.height*.43,cx+r*1.48,s.height*.55)
-      ..lineTo(cx+r*1.75,s.height*.87)..close();
-    canvas.drawPath(torso,white);
-    final plus=Paint()..color=const Color(0xFFFFFFFF)..strokeWidth=s.height*.15..strokeCap=StrokeCap.round;
-    final x=s.width*.79; final y=s.height*.49; final arm=s.height*.23;
-    canvas.drawLine(Offset(x-arm,y),Offset(x+arm,y),plus);
-    canvas.drawLine(Offset(x,y-arm),Offset(x,y+arm),plus);
+    final cx=s.width*.43, headR=s.height*.105;
+    canvas.drawCircle(Offset(cx,s.height*.20),headR,white);
+    // Jacket silhouette with lapels, shoulders and a tapered torso.
+    final jacket=Path()
+      ..moveTo(cx-headR*1.25,s.height*.39)
+      ..lineTo(cx-headR*2.65,s.height*.51)
+      ..lineTo(cx-headR*2.25,s.height*.88)
+      ..lineTo(cx+headR*2.25,s.height*.88)
+      ..lineTo(cx+headR*2.65,s.height*.51)
+      ..lineTo(cx+headR*1.25,s.height*.39)
+      ..lineTo(cx,s.height*.54)
+      ..close();
+    canvas.drawPath(jacket,white);
+    final lapel=Paint()..color=const Color(0xFF0B3518)..style=PaintingStyle.stroke..strokeWidth=2;
+    final left=Path()..moveTo(cx-headR*1.20,s.height*.41)..lineTo(cx-headR*.25,s.height*.68)..lineTo(cx-headR*.05,s.height*.53);
+    final right=Path()..moveTo(cx+headR*1.20,s.height*.41)..lineTo(cx+headR*.25,s.height*.68)..lineTo(cx+headR*.05,s.height*.53);
+    canvas.drawPath(left,lapel); canvas.drawPath(right,lapel);
+    final plus=Paint()..color=const Color(0xFFFFFFFF)..strokeWidth=s.height*.095..strokeCap=StrokeCap.round;
+    final px=s.width*.78, py=s.height*.52, arm=s.height*.16;
+    canvas.drawLine(Offset(px-arm,py),Offset(px+arm,py),plus);
+    canvas.drawLine(Offset(px,py-arm),Offset(px,py+arm),plus);
   }
   @override
   bool shouldRepaint(covariant CustomPainter oldDelegate)=>false;
