@@ -271,7 +271,21 @@ class _MatchesScreenState extends State<MatchesScreen> {
                     padding: EdgeInsets.symmetric(horizontal: compact ? 7 : 14, vertical: compact ? 4 : 8),
                     child: Row(
                       children: [
-                        _StartControl(compact: compact),
+                        Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            GestureDetector(
+                              onTap: () => Navigator.of(context).maybePop(),
+                              child: const SizedBox(
+                                height: 16,
+                                child: Icon(Icons.arrow_back, color: Color(0xFF168BFF), size: 16),
+                              ),
+                            ),
+                            const SizedBox(height: 1),
+                            _StartControl(compact: compact),
+                          ],
+                        ),
                         SizedBox(width: compact ? 7 : 12),
                         Expanded(
                           child: Container(
