@@ -402,6 +402,31 @@ class _BenchVerticalScrollerState extends State<_BenchVerticalScroller> {
   double _dragOffset = 0;
 
   @override
+  void initState() {
+    super.initState();
+    widget.controller.addListener(_handleScroll);
+  }
+
+  @override
+  void didUpdateWidget(covariant _BenchVerticalScroller oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.controller != widget.controller) {
+      oldWidget.controller.removeListener(_handleScroll);
+      widget.controller.addListener(_handleScroll);
+    }
+  }
+
+  void _handleScroll() {
+    if (mounted) setState(() {});
+  }
+
+  @override
+  void dispose() {
+    widget.controller.removeListener(_handleScroll);
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return SizedBox(
       width: widget.width,
