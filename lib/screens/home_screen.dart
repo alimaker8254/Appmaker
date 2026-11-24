@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../models/club.dart';
 import 'settings_screen.dart';
 import 'buy_player_screen.dart';
+import 'buy_coach_screen.dart';
 import 'matches_screen.dart';
 import 'tactics_screen.dart';
 import '../services/game_music.dart';
@@ -90,7 +91,11 @@ class _HomeScreenState extends State<HomeScreen> {
                                                     ? () => Navigator.of(context).push(
                                                           MaterialPageRoute(builder: (_) => const TacticsScreen()),
                                                         )
-                                                    : null,
+                                                    : r * 3 + c == 3
+                                                        ? () => Navigator.of(context).push(
+                                                              MaterialPageRoute(builder: (_) => BuyCoachScreen(club: widget.club)),
+                                                            )
+                                                        : null,
                                         child: _DashboardCard(data: cards[r * 3 + c], compact: compact),
                                       ),
                                     ),
