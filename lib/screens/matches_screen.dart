@@ -114,17 +114,17 @@ class _MatchesScreenState extends State<MatchesScreen> {
           ? _benchPlayers[target.index]
           : _lineup[target.row][target.index];
 
-      if (source.isBench) {
+      if (source.isBench && target.isBench) {
         _benchPlayers[source.index] = targetPlayer;
+        _benchPlayers[target.index] = sourcePlayer;
+      } else if (source.isBench) {
+        _benchPlayers[source.index] = targetPlayer;
+        _lineup[target.row][target.index] = sourcePlayer;
       } else if (target.isBench) {
+        _lineup[source.row][source.index] = targetPlayer;
         _benchPlayers[target.index] = sourcePlayer;
       } else {
         _lineup[source.row][source.index] = targetPlayer;
-      }
-
-      if (target.isBench) {
-        _benchPlayers[target.index] = sourcePlayer;
-      } else {
         _lineup[target.row][target.index] = sourcePlayer;
       }
     });
@@ -287,7 +287,7 @@ class _MatchesScreenState extends State<MatchesScreen> {
                               separatorBuilder: (_, __) => SizedBox(width: compact ? 6 : 10),
                               itemBuilder: (context, index) {
                                 final benchWidth = (w * .105).clamp(112.0, 140.0).toDouble();
-                                final benchHeight = controlHeight - (compact ? 8 : 14);
+                                final benchHeight = controlHeight - (compact ? 8 : 16);
                                 return _draggablePlayerCard(
                                   player: _benchPlayers[index],
                                   slot: _PlayerDragData(isBench: true, row: 0, index: index),
