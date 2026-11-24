@@ -49,8 +49,109 @@ class AppmakerApp extends StatelessWidget {
       primaryTextTheme: ThemeData.dark().primaryTextTheme.apply(fontFamily: 'Vazirmatn'),
     ),
     builder: (context, child) => Directionality(textDirection: TextDirection.rtl, child: child ?? const SizedBox()),
-    home: const TeamSelectionScreen(),
+    home: const LoadingScreen(),
   );
+}
+
+
+class LoadingScreen extends StatefulWidget {
+  const LoadingScreen({super.key});
+
+  @override
+  State<LoadingScreen> createState() => _LoadingScreenState();
+}
+
+class _LoadingScreenState extends State<LoadingScreen>
+    with SingleTickerProviderStateMixin {
+  late final AnimationController _progress;
+
+  @override
+  void initState() {
+    super.initState();
+    _progress = AnimationController(
+      vsync: this,
+      duration: const Duration(seconds: 6),
+    )..addStatusListener((status) {
+        if (status == AnimationStatus.completed && mounted) {
+          Navigator.of(context).pushReplacement(
+            MaterialPageRoute(
+              builder: (_) => const TeamSelectionScreen(),
+            ),
+          );
+        }
+      });
+    _progress.forward();
+  }
+
+  @override
+  void dispose() {
+    _progress.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: const Color(0xFF020725),
+      body: Stack(
+        fit: StackFit.expand,
+        children: [
+          Image.asset(
+            'assets/loading_screen.png',
+            fit: BoxFit.cover,
+            errorBuilder: (_, __, ___) =>
+                const ColoredBox(color: Color(0xFF020725)),
+          ),
+          Positioned(
+            left: 52,
+            right: 52,
+            bottom: 26,
+            child: AnimatedBuilder(
+              animation: _progress,
+              builder: (context, child) {
+                return Container(
+                  height: 10,
+                  decoration: BoxDecoration(
+                    color: const Color(0xFF07102B).withOpacity(.9),
+                    borderRadius: BorderRadius.circular(20),
+                    border: Border.all(
+                      color: const Color(0xFF35CFFF),
+                      width: 1.5,
+                    ),
+                    boxShadow: [
+                      BoxShadow(
+                        color: const Color(0xFF00AFFF).withOpacity(.65),
+                        blurRadius: 12,
+                        spreadRadius: 1,
+                      ),
+                    ],
+                  ),
+                  clipBehavior: Clip.antiAlias,
+                  child: Align(
+                    alignment: Alignment.centerLeft,
+                    child: FractionallySizedBox(
+                      widthFactor: _progress.value,
+                      child: DecoratedBox(
+                        decoration: const BoxDecoration(
+                          gradient: LinearGradient(
+                            colors: [
+                              Color(0xFF087BFF),
+                              Color(0xFF00D9FF),
+                              Color(0xFF36F2A5),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                );
+              },
+            ),
+          ),
+        ],
+      ),
+    );
+  }
 }
 
 const clubs = [
