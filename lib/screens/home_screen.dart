@@ -3,6 +3,7 @@ import '../models/club.dart';
 import 'settings_screen.dart';
 import 'buy_player_screen.dart';
 import 'matches_screen.dart';
+import 'tactics_screen.dart';
 import '../services/game_music.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -85,7 +86,11 @@ class _HomeScreenState extends State<HomeScreen> {
                                                 ? () => Navigator.of(context).push(
                                                       MaterialPageRoute(builder: (_) => BuyPlayerScreen(club: widget.club)),
                                                     )
-                                                : null,
+                                                : r * 3 + c == 4
+                                                    ? () => Navigator.of(context).push(
+                                                          MaterialPageRoute(builder: (_) => const TacticsScreen()),
+                                                        )
+                                                    : null,
                                         child: _DashboardCard(data: cards[r * 3 + c], compact: compact),
                                       ),
                                     ),
