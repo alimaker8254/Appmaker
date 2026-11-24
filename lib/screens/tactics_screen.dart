@@ -117,7 +117,7 @@ class _TacticsScreenState extends State<TacticsScreen> {
     decoration:BoxDecoration(color:const Color(0xB90B2635),borderRadius:BorderRadius.circular(12),border:Border.all(color:const Color(0xFF17647B))),
     child:Column(crossAxisAlignment:CrossAxisAlignment.stretch,children:[
       Row(children:[Expanded(child:Text(title,textDirection:TextDirection.rtl,style:TextStyle(color:enabled?Colors.white:Colors.white38,fontSize:14,fontWeight:FontWeight.w800))),
-        Container(minWidth:53,alignment:Alignment.center,padding:const EdgeInsets.symmetric(horizontal:7,vertical:4),decoration:BoxDecoration(color:const Color(0xFF071725),borderRadius:BorderRadius.circular(7),border:Border.all(color:const Color(0xFF16718B))),
+        Container(constraints:const BoxConstraints(minWidth:53),alignment:Alignment.center,padding:const EdgeInsets.symmetric(horizontal:7,vertical:4),decoration:BoxDecoration(color:const Color(0xFF071725),borderRadius:BorderRadius.circular(7),border:Border.all(color:const Color(0xFF16718B))),
           child:Text(value.round().toString()+'%',style:TextStyle(color:enabled?gold:Colors.white38,fontWeight:FontWeight.w900,fontSize:14)))]),
       Row(children:[if(left!=null)Text(left,style:const TextStyle(color:Colors.white70,fontSize:11)),
         Expanded(child:SliderTheme(data:SliderTheme.of(context).copyWith(activeTrackColor:const Color(0xFF20F06B),inactiveTrackColor:const Color(0xFF17496B),thumbColor:cyan,trackHeight:5,thumbShape:const RoundSliderThumbShape(enabledThumbRadius:9),overlayShape:const RoundSliderOverlayShape(overlayRadius:17)),
