@@ -70,103 +70,105 @@ class _TacticsScreenState extends State<TacticsScreen> {
     body:Stack(children:[
       const Positioned.fill(child:_Backdrop()),
       SafeArea(child:Column(children:[
-        Padding(padding:const EdgeInsets.fromLTRB(48,2,48,5),child:Container(
-          padding:const EdgeInsets.symmetric(horizontal:34,vertical:3),
-          decoration:BoxDecoration(color:const Color(0xE9081722),borderRadius:BorderRadius.circular(24),border:Border.all(color:green,width:2),boxShadow:[BoxShadow(color:green.withOpacity(.5),blurRadius:13)]),
-          child:const Column(mainAxisSize:MainAxisSize.min,children:[Text('تاکتیک‌ها',style:TextStyle(color:Colors.white,fontSize:22,fontWeight:FontWeight.w900)),Text('TACTICS',style:TextStyle(color:Colors.white,fontSize:11,fontWeight:FontWeight.bold))]),
-        )),
-        Expanded(child:LayoutBuilder(builder:(context,c){
-          if(c.maxWidth>=850)return Row(children:[Expanded(child:_teamPanel()),const SizedBox(width:9),Expanded(child:_individualPanel())]);
-          return ListView(children:[SizedBox(height:c.maxHeight*.9,child:_teamPanel()),SizedBox(height:8),SizedBox(height:c.maxHeight*.9,child:_individualPanel())]);
-        })),
-        Padding(padding:const EdgeInsets.fromLTRB(8,4,8,5),child:SizedBox(width:310,height:52,child:ElevatedButton.icon(
-          onPressed:loaded&&!saving?_save:null,
-          icon:saving?const SizedBox(width:18,height:18,child:CircularProgressIndicator(strokeWidth:2,color:Colors.white)):const Icon(Icons.save),
-          label:const Text('ذخیره تاکتیک',style:TextStyle(fontSize:21,fontWeight:FontWeight.w900)),
-          style:ElevatedButton.styleFrom(backgroundColor:const Color(0xFF075DFF),foregroundColor:Colors.white,side:const BorderSide(color:cyan,width:2),shape:RoundedRectangleBorder(borderRadius:BorderRadius.circular(30)),elevation:9),
-        ))),
+        Padding(padding:const EdgeInsets.fromLTRB(48,8,48,10),child:Container(width:double.infinity,padding:const EdgeInsets.symmetric(vertical:8),
+          decoration:BoxDecoration(color:const Color(0xE9081722),borderRadius:BorderRadius.circular(18),border:Border.all(color:green,width:2),boxShadow:[BoxShadow(color:green.withOpacity(.35),blurRadius:12)]),
+          child:const Column(mainAxisSize:MainAxisSize.min,children:[Text('تاکتیک‌ها',style:TextStyle(color:Colors.white,fontSize:23,fontWeight:FontWeight.w900)),Text('TACTICS',style:TextStyle(color:Colors.white,fontSize:11,fontWeight:FontWeight.bold))]))),
+        Expanded(child:ListView(padding:const EdgeInsets.fromLTRB(10,4,10,18),children:[
+          _teamPanel(),const SizedBox(height:16),_individualPanel(),const SizedBox(height:10),
+        ])),
+        Container(width:double.infinity,padding:const EdgeInsets.fromLTRB(12,8,12,9),decoration:BoxDecoration(color:const Color(0xF0051420),border:Border(top:BorderSide(color:cyan.withOpacity(.55)))),
+          child:SizedBox(height:54,child:ElevatedButton.icon(onPressed:loaded&&!saving?_save:null,
+            icon:saving?const SizedBox(width:20,height:20,child:CircularProgressIndicator(strokeWidth:2,color:Colors.white)):const Icon(Icons.save),
+            label:const Text('ثبت تاکتیک',style:TextStyle(fontSize:21,fontWeight:FontWeight.w900)),
+            style:ElevatedButton.styleFrom(backgroundColor:const Color(0xFF075DFF),foregroundColor:Colors.white,side:const BorderSide(color:cyan,width:2),shape:RoundedRectangleBorder(borderRadius:BorderRadius.circular(17)),elevation:9)))),
       ])),
-      Positioned(top:1,right:2,child:IconButton(onPressed:()=>Navigator.of(context).maybePop(),icon:const Icon(Icons.arrow_back,color:cyan,size:27))),
+      Positioned(top:3,right:3,child:IconButton(onPressed:()=>Navigator.of(context).maybePop(),icon:const Icon(Icons.arrow_back,color:cyan,size:28))),
     ]),
   );
 
-  Widget _panel(String title,Widget child)=>Container(
-    margin:const EdgeInsets.fromLTRB(6,3,6,5),padding:const EdgeInsets.fromLTRB(9,17,9,7),
-    decoration:BoxDecoration(color:const Color(0xD8051720),borderRadius:BorderRadius.circular(22),border:Border.all(color:green,width:2.2),boxShadow:[BoxShadow(color:green.withOpacity(.3),blurRadius:14)]),
-    child:Column(children:[
-      Transform.translate(offset:const Offset(0,-14),child:Container(padding:const EdgeInsets.symmetric(horizontal:20,vertical:3),decoration:BoxDecoration(color:const Color(0xFF061421),borderRadius:BorderRadius.circular(22),border:Border.all(color:green,width:1.8),boxShadow:[BoxShadow(color:green.withOpacity(.4),blurRadius:8)]),child:Text(title,style:const TextStyle(color:gold,fontSize:16,fontWeight:FontWeight.w900)))),
-      Expanded(child:Transform.translate(offset:const Offset(0,-8),child:child)),
-    ]),
-  );
+  Widget _panel(String title,Widget child)=>Container(width:double.infinity,padding:const EdgeInsets.fromLTRB(12,15,12,14),
+    decoration:BoxDecoration(color:const Color(0xE8071724),borderRadius:BorderRadius.circular(19),border:Border.all(color:green,width:2),boxShadow:[BoxShadow(color:green.withOpacity(.20),blurRadius:13)]),
+    child:Column(crossAxisAlignment:CrossAxisAlignment.stretch,children:[
+      Container(alignment:Alignment.center,padding:const EdgeInsets.symmetric(vertical:8,horizontal:10),margin:const EdgeInsets.only(bottom:13),
+        decoration:BoxDecoration(color:const Color(0xFF061421),borderRadius:BorderRadius.circular(13),border:Border.all(color:green,width:1.5)),
+        child:Text(title,textAlign:TextAlign.center,style:const TextStyle(color:gold,fontSize:18,fontWeight:FontWeight.w900))),
+      child,
+    ]));
 
-  Widget _teamPanel()=>_panel('تنظیم تاکتیک‌های تیمی',Column(children:[
-    const Text('انتخاب سبک بازی',style:TextStyle(color:Colors.white,fontWeight:FontWeight.bold,fontSize:12)),
-    const SizedBox(height:4),
-    Expanded(flex:5,child:GridView.builder(physics:const NeverScrollableScrollPhysics(),itemCount:8,
-      gridDelegate:const SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount:4,crossAxisSpacing:5,mainAxisSpacing:5,childAspectRatio:1.45),
-      itemBuilder:(context,i){final s=styles[i],active=i==style;return InkWell(onTap:()=>setState(() { style=i; team=s.values.map((v)=>v.toDouble()).toList(); }),child:Container(
-        padding:const EdgeInsets.all(3),decoration:BoxDecoration(gradient:const LinearGradient(colors:[Color(0xFF0A2B42),Color(0xFF04111E)]),borderRadius:BorderRadius.circular(11),border:Border.all(color:active?green:const Color(0xFF168CB2),width:active?2.5:1.2),boxShadow:active?[BoxShadow(color:green.withOpacity(.6),blurRadius:10)]:[]),
-        child:Column(mainAxisAlignment:MainAxisAlignment.center,children:[Icon(s.icon,color:Colors.white,size:20),FittedBox(child:Text(s.fa,style:const TextStyle(color:Colors.white,fontSize:10,fontWeight:FontWeight.bold))),FittedBox(child:Text(s.en,textDirection:TextDirection.ltr,style:const TextStyle(color:Colors.white70,fontSize:8)))]),
-      ));},
-    )),
-    const SizedBox(height:5),
-    Expanded(flex:8,child:GridView.builder(physics:const NeverScrollableScrollPhysics(),itemCount:8,
-      gridDelegate:const SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount:2,crossAxisSpacing:6,mainAxisSpacing:5,childAspectRatio:3.55),
-      itemBuilder:(context,i)=>_slider(labels[i],team[i],(v)=>setState(()=>team[i]=v),left:ends[i][0],right:ends[i][1]),
-    )),
+  Widget _teamPanel()=>_panel('تنظیم تاکتیک‌های تیمی',Column(crossAxisAlignment:CrossAxisAlignment.stretch,children:[
+    const Text('۱. انتخاب سبک بازی',textDirection:TextDirection.rtl,style:TextStyle(color:Colors.white,fontSize:16,fontWeight:FontWeight.w900)),
+    const SizedBox(height:9),
+    GridView.builder(shrinkWrap:true,physics:const NeverScrollableScrollPhysics(),itemCount:8,
+      gridDelegate:const SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount:2,crossAxisSpacing:8,mainAxisSpacing:8,mainAxisExtent:76),
+      itemBuilder:(context,i){final s=styles[i],active=i==style;return InkWell(onTap:()=>setState((){style=i;team=s.values.map((v)=>v.toDouble()).toList();}),borderRadius:BorderRadius.circular(12),
+        child:Container(padding:const EdgeInsets.symmetric(horizontal:9,vertical:7),decoration:BoxDecoration(gradient:const LinearGradient(colors:[Color(0xFF0A2B42),Color(0xFF04111E)]),borderRadius:BorderRadius.circular(12),border:Border.all(color:active?green:const Color(0xFF168CB2),width:active?2.5:1.2),boxShadow:active?[BoxShadow(color:green.withOpacity(.4),blurRadius:9)]:[]),
+          child:Row(children:[Icon(s.icon,color:active?green:Colors.white,size:27),const SizedBox(width:9),Expanded(child:Column(mainAxisAlignment:MainAxisAlignment.center,crossAxisAlignment:CrossAxisAlignment.start,children:[
+            Text(s.fa,maxLines:1,overflow:TextOverflow.ellipsis,textDirection:TextDirection.rtl,style:const TextStyle(color:Colors.white,fontSize:13,fontWeight:FontWeight.w900)),
+            const SizedBox(height:2),Text(s.en,textDirection:TextDirection.ltr,style:const TextStyle(color:Colors.white70,fontSize:10)),
+          ])),if(active)const Icon(Icons.check_circle,color:green,size:18)])));},
+    ),
+    const SizedBox(height:20),const Divider(color:Color(0xFF17647B),height:1),const SizedBox(height:14),
+    const Text('۲. تنظیمات اختصاصی سبک بازی',textDirection:TextDirection.rtl,style:TextStyle(color:Colors.white,fontSize:16,fontWeight:FontWeight.w900)),
+    const SizedBox(height:8),
+    ...List.generate(8,(i)=>Padding(padding:const EdgeInsets.only(bottom:9),child:_slider(labels[i],team[i],(v)=>setState(()=>team[i]=v),left:ends[i][0],right:ends[i][1]))),
   ]));
 
-  Widget _slider(String title,double value,ValueChanged<double> onChanged,{String? left,String? right,bool enabled=true})=>Container(
-    padding:const EdgeInsets.symmetric(horizontal:6,vertical:2),
-    decoration:BoxDecoration(color:const Color(0xB90B2635),borderRadius:BorderRadius.circular(11),border:Border.all(color:const Color(0xFF17647B))),
-    child:Row(children:[
-      Expanded(flex:3,child:Text(title,maxLines:2,overflow:TextOverflow.ellipsis,textDirection:TextDirection.rtl,style:TextStyle(color:enabled?Colors.white:Colors.white38,fontSize:10,fontWeight:FontWeight.bold))),
-      if(left!=null)Text(left,style:const TextStyle(color:Colors.white70,fontSize:8)),
-      Expanded(flex:5,child:SliderTheme(data:SliderTheme.of(context).copyWith(activeTrackColor:const Color(0xFF20F06B),inactiveTrackColor:const Color(0xFF17496B),thumbColor:cyan,trackHeight:4,thumbShape:const RoundSliderThumbShape(enabledThumbRadius:7)),child:Slider(value:value.clamp(0,100).toDouble(),min:0,max:100,divisions:100,onChanged:enabled?onChanged:null))),
-      if(right!=null)Text(right,style:const TextStyle(color:Colors.white70,fontSize:8)),
-      Container(width:40,alignment:Alignment.center,padding:const EdgeInsets.symmetric(vertical:3),decoration:BoxDecoration(color:const Color(0xFF071725),borderRadius:BorderRadius.circular(7),border:Border.all(color:const Color(0xFF16718B))),child:Text(value.round().toString()+'%',style:TextStyle(color:enabled?Colors.white:Colors.white38,fontWeight:FontWeight.w900,fontSize:12))),
-    ]),
-  );
+  Widget _slider(String title,double value,ValueChanged<double> onChanged,{String? left,String? right,bool enabled=true})=>Container(width:double.infinity,padding:const EdgeInsets.fromLTRB(11,9,11,7),
+    decoration:BoxDecoration(color:const Color(0xB90B2635),borderRadius:BorderRadius.circular(12),border:Border.all(color:const Color(0xFF17647B))),
+    child:Column(crossAxisAlignment:CrossAxisAlignment.stretch,children:[
+      Row(children:[Expanded(child:Text(title,textDirection:TextDirection.rtl,style:TextStyle(color:enabled?Colors.white:Colors.white38,fontSize:14,fontWeight:FontWeight.w800))),
+        Container(minWidth:53,alignment:Alignment.center,padding:const EdgeInsets.symmetric(horizontal:7,vertical:4),decoration:BoxDecoration(color:const Color(0xFF071725),borderRadius:BorderRadius.circular(7),border:Border.all(color:const Color(0xFF16718B))),
+          child:Text(value.round().toString()+'%',style:TextStyle(color:enabled?gold:Colors.white38,fontWeight:FontWeight.w900,fontSize:14)))]),
+      Row(children:[if(left!=null)Text(left,style:const TextStyle(color:Colors.white70,fontSize:11)),
+        Expanded(child:SliderTheme(data:SliderTheme.of(context).copyWith(activeTrackColor:const Color(0xFF20F06B),inactiveTrackColor:const Color(0xFF17496B),thumbColor:cyan,trackHeight:5,thumbShape:const RoundSliderThumbShape(enabledThumbRadius:9),overlayShape:const RoundSliderOverlayShape(overlayRadius:17)),
+          child:Slider(value:value.clamp(0,100).toDouble(),min:0,max:100,divisions:100,onChanged:enabled?onChanged:null))),
+        if(right!=null)Text(right,style:const TextStyle(color:Colors.white70,fontSize:11))]),
+    ]));
 
   BoxDecoration get _rowDecoration=>BoxDecoration(color:const Color(0xB9071B28),borderRadius:BorderRadius.circular(12),border:Border.all(color:const Color(0xFF155B70)));
-  Widget _individualPanel()=>_panel('تنظیم تاکتیک‌های فردی',ListView(padding:EdgeInsets.zero,children:[
-    _toggle('جابجایی بازیکنان'),_toggle('جلو آمدن دفاع راست (RB)'),_toggle('جلو آمدن دفاع چپ (LB)'),
-    _players('میزان دوندگی بیشتر',running,'میزان دوندگی'),
-    _toggle('جابه‌جایی وینگرها'),_toggle('شوت از پشت محوطه'),
+  Widget _individualPanel()=>_panel('تنظیم تاکتیک‌های فردی',Column(crossAxisAlignment:CrossAxisAlignment.stretch,children:[
+    const Text('هر دستور را جداگانه فعال کنید و شدت آن را تنظیم کنید.',textDirection:TextDirection.rtl,style:TextStyle(color:Colors.white70,fontSize:12)),
+    const SizedBox(height:10),_toggle('جابجایی بازیکنان'),_toggle('جلو آمدن دفاع راست (RB)'),_toggle('جلو آمدن دفاع چپ (LB)'),
+    _players('میزان دوندگی بیشتر',running,'میزان دوندگی'),_toggle('جابه‌جایی وینگرها'),_toggle('شوت از پشت محوطه'),
     _players('بازگشت سریع هنگام ازدست‌دادن توپ',recovery,'بازگشت سریع هنگام ازدست‌دادن توپ'),
   ]));
 
   Widget _toggle(String name){
     final on=toggles[name]??false;
-    return Container(margin:const EdgeInsets.only(bottom:5),padding:const EdgeInsets.symmetric(horizontal:7,vertical:3),decoration:_rowDecoration,child:Column(children:[
-      Row(children:[Expanded(child:Text(name,textDirection:TextDirection.rtl,style:const TextStyle(color:Colors.white,fontSize:11,fontWeight:FontWeight.bold))),_yesNo(on,(v)=>setState(()=>toggles[name]=v))]),
-      _slider('میزان',individual[name]!, (v)=>setState(()=>individual[name]=v),enabled:on),
+    return Container(margin:const EdgeInsets.only(bottom:10),padding:const EdgeInsets.all(11),decoration:_rowDecoration,child:Column(crossAxisAlignment:CrossAxisAlignment.stretch,children:[
+      Row(children:[Expanded(child:Text(name,textDirection:TextDirection.rtl,style:const TextStyle(color:Colors.white,fontSize:14,fontWeight:FontWeight.w900))),_yesNo(on,(v)=>setState(()=>toggles[name]=v))]),
+      const SizedBox(height:8),_slider('میزان اجرا',individual[name]!, (v)=>setState(()=>individual[name]=v),enabled:on),
+      if(!on)const Padding(padding:EdgeInsets.only(top:5),child:Text('این دستور غیرفعال است',textDirection:TextDirection.rtl,style:TextStyle(color:Colors.white54,fontSize:10))),
     ]));
   }
 
-  Widget _players(String title,Set<String> selected,String sliderKey)=>Container(
-    margin:const EdgeInsets.only(bottom:5),padding:const EdgeInsets.all(6),decoration:_rowDecoration,
+  Widget _players(String title,Set<String> selected,String sliderKey)=>Container(margin:const EdgeInsets.only(bottom:11),padding:const EdgeInsets.all(11),decoration:_rowDecoration,
     child:Column(crossAxisAlignment:CrossAxisAlignment.stretch,children:[
-      Text(title,textDirection:TextDirection.rtl,style:const TextStyle(color:Colors.white,fontSize:11,fontWeight:FontWeight.bold)),
-      Wrap(spacing:3,runSpacing:1,children:[...starters.map((p)=>_chip(p,selected)),...bench.map((p)=>_chip(p,selected))]),
-      _slider('شدت',individual[sliderKey]!, (v)=>setState(()=>individual[sliderKey]=v),enabled:selected.isNotEmpty),
-      if(selected.isEmpty)const Text('ابتدا حداقل یک بازیکن انتخاب کنید',textDirection:TextDirection.rtl,style:TextStyle(color:Colors.white54,fontSize:9)),
-    ]),
-  );
+      Text(title,textDirection:TextDirection.rtl,style:const TextStyle(color:Colors.white,fontSize:14,fontWeight:FontWeight.w900)),
+      const SizedBox(height:8),const Text('ترکیب اصلی',textDirection:TextDirection.rtl,style:TextStyle(color:gold,fontSize:12,fontWeight:FontWeight.bold)),
+      const SizedBox(height:4),Wrap(spacing:5,runSpacing:4,children:starters.map((p)=>_chip(p,selected)).toList()),
+      const SizedBox(height:10),const Text('بازیکنان ذخیره',textDirection:TextDirection.rtl,style:TextStyle(color:gold,fontSize:12,fontWeight:FontWeight.bold)),
+      const SizedBox(height:4),Wrap(spacing:5,runSpacing:4,children:bench.map((p)=>_chip(p,selected)).toList()),
+      const SizedBox(height:10),Row(children:[
+        Expanded(child:Text('بازیکنان انتخاب‌شده: '+selected.length.toString(),textDirection:TextDirection.rtl,style:const TextStyle(color:cyan,fontSize:12,fontWeight:FontWeight.bold))),
+        TextButton(onPressed:()=>setState(()=>selected.clear()),child:const Text('پاک کردن انتخاب‌ها',style:TextStyle(color:Colors.white70,fontSize:11)))]),
+      _slider('شدت افزایش',individual[sliderKey]!, (v)=>setState(()=>individual[sliderKey]=v),enabled:selected.isNotEmpty),
+      if(selected.isEmpty)const Padding(padding:EdgeInsets.only(top:5),child:Text('برای فعال شدن اسلایدر، حداقل یک بازیکن را انتخاب کنید.',textDirection:TextDirection.rtl,style:TextStyle(color:Colors.white54,fontSize:11))),
+    ]));
 
   Widget _chip(String name,Set<String> selected){
     final on=selected.contains(name);
-    return FilterChip(selected:on,onSelected:(v)=>setState(()=>v?selected.add(name):selected.remove(name)),showCheckmark:false,visualDensity:VisualDensity.compact,materialTapTargetSize:MaterialTapTargetSize.shrinkWrap,
+    return FilterChip(selected:on,onSelected:(v)=>setState(()=>v?selected.add(name):selected.remove(name)),showCheckmark:false,visualDensity:VisualDensity.standard,materialTapTargetSize:MaterialTapTargetSize.padded,
       backgroundColor:const Color(0xFF0B3343),selectedColor:const Color(0xFF087D35),side:BorderSide(color:on?green:const Color(0xFF176B83)),
-      label:Text(name,style:const TextStyle(color:Colors.white,fontSize:9)));
+      label:Text(name,style:const TextStyle(color:Colors.white,fontSize:12,fontWeight:FontWeight.w700)));
   }
 
   Widget _yesNo(bool on,ValueChanged<bool> change)=>Row(mainAxisSize:MainAxisSize.min,children:[
     _choice('خیر',!on,()=>change(false)),_choice('بله',on,()=>change(true)),
   ]);
-  Widget _choice(String text,bool active,VoidCallback tap)=>InkWell(onTap:tap,child:AnimatedContainer(duration:const Duration(milliseconds:140),width:52,padding:const EdgeInsets.symmetric(vertical:4),alignment:Alignment.center,
+  Widget _choice(String text,bool active,VoidCallback tap)=>InkWell(onTap:tap,child:AnimatedContainer(duration:const Duration(milliseconds:140),width:58,padding:const EdgeInsets.symmetric(vertical:8),alignment:Alignment.center,
     decoration:BoxDecoration(color:active?const Color(0xFF087D32):const Color(0xFF061522),borderRadius:BorderRadius.circular(9),border:Border.all(color:active?green:const Color(0xFF17536B)),boxShadow:active?[BoxShadow(color:green.withOpacity(.5),blurRadius:8)]:[]),
-    child:Text(text,style:const TextStyle(color:Colors.white,fontSize:10,fontWeight:FontWeight.bold))));
+    child:Text(text,style:const TextStyle(color:Colors.white,fontSize:12,fontWeight:FontWeight.bold))));
 }
 
 class _Style{final String fa,en;final IconData icon;final List<int> values;const _Style(this.fa,this.en,this.icon,this.values);}
