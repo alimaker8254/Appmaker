@@ -85,6 +85,8 @@ class _BuyCoachScreenState extends State<BuyCoachScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final width = MediaQuery.sizeOf(context).width;
+    final columns = width >= 1150 ? 5 : (width >= 850 ? 4 : (width >= 560 ? 3 : 2));
     return Scaffold(
       backgroundColor: const Color(0xFF02091B),
       body: Stack(children: [
@@ -92,66 +94,60 @@ class _BuyCoachScreenState extends State<BuyCoachScreen> {
         SafeArea(
           child: Column(children: [
             Padding(
-              padding: const EdgeInsets.fromLTRB(54, 7, 54, 11),
+              padding: const EdgeInsets.fromLTRB(54, 8, 54, 8),
               child: Container(
-                height: 76,
-                width: 470,
+                height: 62,
+                constraints: const BoxConstraints(maxWidth: 470),
+                width: double.infinity,
                 decoration: BoxDecoration(
                   gradient: const LinearGradient(colors: [Color(0xFF071633), Color(0xFF02091B)]),
-                  borderRadius: BorderRadius.circular(22),
-                  border: Border.all(color: _cyan, width: 2.4),
-                  boxShadow: [BoxShadow(color: _blue.withOpacity(.8), blurRadius: 20, spreadRadius: 2)],
+                  borderRadius: BorderRadius.circular(18),
+                  border: Border.all(color: _cyan, width: 2),
+                  boxShadow: [BoxShadow(color: _blue.withOpacity(.65), blurRadius: 14, spreadRadius: 1)],
                 ),
                 child: const Column(mainAxisAlignment: MainAxisAlignment.center, children: [
-                  Text('خرید مربی', style: TextStyle(fontFamily: 'Vazirmatn', color: Colors.white, fontSize: 27, fontWeight: FontWeight.w900)),
-                  Text('MANAGER SHOP', style: TextStyle(color: Color(0xFF9ADFFF), fontSize: 14, fontWeight: FontWeight.w900, letterSpacing: 1.1)),
+                  Text('خرید مربی', style: TextStyle(fontFamily: 'Vazirmatn', color: Colors.white, fontSize: 23, fontWeight: FontWeight.w900)),
+                  Text('MANAGER SHOP', style: TextStyle(color: Color(0xFF9ADFFF), fontSize: 11, fontWeight: FontWeight.w900, letterSpacing: 1)),
                 ]),
               ),
             ),
             Expanded(
-              child: Padding(
-                padding: const EdgeInsets.fromLTRB(14, 2, 14, 12),
-                child: Row(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
-                  Expanded(
-                    flex: 5,
-                    child: Container(
-                      padding: const EdgeInsets.all(10),
-                      decoration: BoxDecoration(
-                        color: const Color(0xB906142B),
-                        borderRadius: BorderRadius.circular(22),
-                        border: Border.all(color: _cyan, width: 2),
-                        boxShadow: [BoxShadow(color: _blue.withOpacity(.35), blurRadius: 16)],
-                      ),
-                      child: LayoutBuilder(builder: (context, box) {
-                        final columns = box.maxWidth >= 850 ? 5 : (box.maxWidth >= 520 ? 3 : 2);
-                        return GridView.builder(
-                          padding: const EdgeInsets.all(2),
-                          itemCount: _coaches.length,
-                          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                            crossAxisCount: columns,
-                            crossAxisSpacing: 10,
-                            mainAxisSpacing: 10,
-                            childAspectRatio: .66,
-                          ),
-                          itemBuilder: (context, index) => _CoachCard(
-                            coach: _coaches[index],
-                            selected: _selected == index,
-                            hired: _hiredId == _coaches[index].name,
-                            onTap: () => setState(() => _selected = index),
-                          ),
-                        );
-                      }),
-                    ),
+              child: SingleChildScrollView(
+                padding: const EdgeInsets.fromLTRB(12, 4, 12, 22),
+                child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
+                  _CoachDetails(
+                    coach: _coaches[_selected],
+                    hired: _hiredId == _coaches[_selected].name,
+                    loading: _loading,
+                    saving: _saving,
+                    onHire: _hire,
                   ),
-                  const SizedBox(width: 17),
-                  SizedBox(
-                    width: MediaQuery.sizeOf(context).width < 1050 ? 250 : 310,
-                    child: _CoachDetails(
-                      coach: _coaches[_selected],
-                      hired: _hiredId == _coaches[_selected].name,
-                      loading: _loading,
-                      saving: _saving,
-                      onHire: _hire,
+                  const SizedBox(height: 14),
+                  Container(
+                    padding: const EdgeInsets.all(9),
+                    decoration: BoxDecoration(
+                      color: const Color(0xB906142B),
+                      borderRadius: BorderRadius.circular(18),
+                      border: Border.all(color: _cyan, width: 1.8),
+                      boxShadow: [BoxShadow(color: _blue.withOpacity(.28), blurRadius: 13)],
+                    ),
+                    child: GridView.builder(
+                      shrinkWrap: true,
+                      physics: const NeverScrollableScrollPhysics(),
+                      padding: EdgeInsets.zero,
+                      itemCount: _coaches.length,
+                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                        crossAxisCount: columns,
+                        crossAxisSpacing: 9,
+                        mainAxisSpacing: 9,
+                        childAspectRatio: width < 560 ? .94 : .88,
+                      ),
+                      itemBuilder: (context, index) => _CoachCard(
+                        coach: _coaches[index],
+                        selected: _selected == index,
+                        hired: _hiredId == _coaches[index].name,
+                        onTap: () => setState(() => _selected = index),
+                      ),
                     ),
                   ),
                 ]),
@@ -160,12 +156,12 @@ class _BuyCoachScreenState extends State<BuyCoachScreen> {
           ]),
         ),
         Positioned(
-          top: 4,
-          right: 4,
+          top: 2,
+          right: 2,
           child: IconButton(
             tooltip: 'بازگشت',
             onPressed: () => Navigator.of(context).maybePop(),
-            icon: const Icon(Icons.arrow_back, color: _cyan, size: 29),
+            icon: const Icon(Icons.arrow_back, color: _cyan, size: 27),
           ),
         ),
       ]),
@@ -199,55 +195,50 @@ class _CoachCard extends StatelessWidget {
         decoration: BoxDecoration(
           gradient: const LinearGradient(begin: Alignment.topLeft, end: Alignment.bottomRight,
             colors: [Color(0xFFB80020), Color(0xFF48000D), Color(0xFF17030B)]),
-          borderRadius: BorderRadius.circular(19),
-          border: Border.all(color: selected ? const Color(0xFFFFF4F4) : _red, width: selected ? 3 : 2),
-          boxShadow: [BoxShadow(color: _red.withOpacity(selected ? .8 : .48), blurRadius: selected ? 16 : 10, spreadRadius: selected ? 1 : 0)],
+          borderRadius: BorderRadius.circular(14),
+          border: Border.all(color: selected ? const Color(0xFFFFF4F4) : _red, width: selected ? 2.2 : 1.3),
+          boxShadow: [BoxShadow(color: _red.withOpacity(selected ? .62 : .32), blurRadius: selected ? 10 : 6)],
         ),
         child: Padding(
-          padding: const EdgeInsets.fromLTRB(7, 5, 7, 6),
-          child: Column(children: [
-            Expanded(flex: 5, child: Center(child: Icon(Icons.person_rounded, color: const Color(0xFFD7E8FF), size: 67,
-              shadows: [Shadow(color: Colors.white.withOpacity(.4), blurRadius: 8)]))),
-            Container(
-              width: double.infinity,
-              padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 3),
-              decoration: BoxDecoration(color: const Color(0xDD21000A), borderRadius: BorderRadius.circular(7),
-                border: Border.all(color: Colors.white.withOpacity(.2))),
-              child: FittedBox(fit: BoxFit.scaleDown, child: Text(coach.name, maxLines: 1,
-                style: const TextStyle(color: Colors.white, fontSize: 14, fontWeight: FontWeight.w900))),
+          padding: const EdgeInsets.fromLTRB(6, 5, 6, 5),
+          child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
+            Expanded(
+              child: Center(child: Icon(Icons.person_rounded,
+                color: const Color(0xFFD7E8FF),
+                size: 48,
+                shadows: [Shadow(color: Colors.white.withOpacity(.35), blurRadius: 6)])),
             ),
-            const SizedBox(height: 4),
-            FittedBox(fit: BoxFit.scaleDown, child: RichText(text: TextSpan(children: [
-              TextSpan(text: '${coach.rating}', style: const TextStyle(color: _gold, fontSize: 20, fontWeight: FontWeight.w900)),
-              const TextSpan(text: '  قدرت کلی', style: TextStyle(color: Colors.white, fontSize: 11, fontWeight: FontWeight.bold)),
-            ]))),
-            const SizedBox(height: 4),
-            ...coach.features.map((feature) => Padding(
-              padding: const EdgeInsets.symmetric(vertical: 1),
-              child: Row(children: [
-                const Icon(Icons.circle, color: _gold, size: 6),
-                const SizedBox(width: 4),
-                Expanded(child: Text(feature, maxLines: 1, overflow: TextOverflow.ellipsis, textAlign: TextAlign.center,
-                  style: const TextStyle(color: Colors.white, fontFamily: 'Vazirmatn', fontSize: 10, fontWeight: FontWeight.w700))),
-              ]),
-            )),
-            const Spacer(),
-            FittedBox(fit: BoxFit.scaleDown, child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-              const Icon(Icons.monetization_on, color: _gold, size: 19),
-              const SizedBox(width: 4),
-              Text(_money(coach.price), style: const TextStyle(color: _gold, fontSize: 15, fontWeight: FontWeight.w900)),
+            Text(coach.name, maxLines: 1, overflow: TextOverflow.ellipsis, textAlign: TextAlign.center,
+              style: const TextStyle(color: Colors.white, fontSize: 12, fontWeight: FontWeight.w900)),
+            const SizedBox(height: 3),
+            RichText(text: TextSpan(children: [
+              TextSpan(text: '${coach.rating}', style: const TextStyle(color: _gold, fontSize: 17, fontWeight: FontWeight.w900)),
+              const TextSpan(text: '  قدرت کلی', style: TextStyle(color: Colors.white, fontSize: 10, fontWeight: FontWeight.bold)),
             ])),
+            const SizedBox(height: 2),
+            ...coach.features.map((feature) => Text('• $feature', maxLines: 1, overflow: TextOverflow.ellipsis,
+              textAlign: TextAlign.center,
+              style: const TextStyle(color: Colors.white, fontFamily: 'Vazirmatn', fontSize: 9, fontWeight: FontWeight.w600))),
+            const SizedBox(height: 3),
+            Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+              const Icon(Icons.monetization_on, color: _gold, size: 15),
+              const SizedBox(width: 3),
+              Flexible(child: FittedBox(fit: BoxFit.scaleDown, child: Text(_money(coach.price),
+                style: const TextStyle(color: _gold, fontSize: 13, fontWeight: FontWeight.w900)))),
+            ]),
             const SizedBox(height: 4),
-            SizedBox(width: double.infinity, height: 34, child: OutlinedButton(
+            SizedBox(width: double.infinity, height: 27, child: OutlinedButton(
               onPressed: onTap,
               style: OutlinedButton.styleFrom(
                 backgroundColor: hired ? const Color(0xFF3A101A) : const Color(0xFF8D0018),
                 foregroundColor: Colors.white,
-                side: const BorderSide(color: Color(0xFFFFA2B1), width: 1.5),
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(22)),
+                side: const BorderSide(color: Color(0xFFFFA2B1), width: 1.2),
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(18)),
                 padding: EdgeInsets.zero,
+                minimumSize: Size.zero,
               ),
-              child: Text(hired ? 'انتخاب‌شده' : 'خرید', style: const TextStyle(fontFamily: 'Vazirmatn', fontSize: 13, fontWeight: FontWeight.w900)),
+              child: Text(hired ? 'انتخاب‌شده' : 'انتخاب مربی',
+                maxLines: 1, style: const TextStyle(fontFamily: 'Vazirmatn', fontSize: 10, fontWeight: FontWeight.w900)),
             )),
           ]),
         ),
@@ -268,88 +259,67 @@ class _CoachDetails extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.fromLTRB(12, 12, 12, 12),
+      padding: const EdgeInsets.all(10),
       decoration: BoxDecoration(
         gradient: const LinearGradient(colors: [Color(0xFF06152B), Color(0xFF020817)]),
-        borderRadius: BorderRadius.circular(22),
-        border: Border.all(color: _cyan, width: 2.3),
-        boxShadow: [BoxShadow(color: const Color(0xFF087BFF).withOpacity(.55), blurRadius: 18, spreadRadius: 1)],
+        borderRadius: BorderRadius.circular(17),
+        border: Border.all(color: _cyan, width: 1.8),
+        boxShadow: [BoxShadow(color: const Color(0xFF087BFF).withOpacity(.35), blurRadius: 12)],
       ),
-      child: Column(children: [
-        Container(
-          width: double.infinity,
-          padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 5),
-          decoration: BoxDecoration(color: const Color(0xFF020817), borderRadius: BorderRadius.circular(12)),
-          child: FittedBox(fit: BoxFit.scaleDown, child: Text(coach.name, maxLines: 1,
-            style: const TextStyle(color: Colors.white, fontSize: 19, fontWeight: FontWeight.w900))),
-        ),
-        const SizedBox(height: 7),
-        Expanded(flex: 5, child: Container(
-          width: double.infinity,
-          decoration: BoxDecoration(
-            gradient: const RadialGradient(colors: [Color(0xFFFF294B), Color(0xFF850018), Color(0xFF28000B)]),
-            borderRadius: BorderRadius.circular(15),
-            border: Border.all(color: const Color(0xFFFF526B), width: 1.5),
+      child: LayoutBuilder(builder: (context, constraints) {
+        final compact = constraints.maxWidth < 500;
+        return Row(crossAxisAlignment: CrossAxisAlignment.center, children: [
+          Container(
+            width: compact ? 66 : 82,
+            height: compact ? 76 : 88,
+            decoration: BoxDecoration(
+              gradient: const RadialGradient(colors: [Color(0xFFFF294B), Color(0xFF850018), Color(0xFF28000B)]),
+              borderRadius: BorderRadius.circular(12),
+              border: Border.all(color: const Color(0xFFFF526B), width: 1.2),
+            ),
+            child: const Icon(Icons.person_rounded, color: Color(0xFFDCEBFF), size: 54),
           ),
-          child: const Icon(Icons.person_rounded, color: Color(0xFFDCEBFF), size: 118),
-        )),
-        const SizedBox(height: 8),
-        Container(
-          width: double.infinity,
-          padding: const EdgeInsets.symmetric(vertical: 8),
-          decoration: BoxDecoration(color: const Color(0xFF160811), borderRadius: BorderRadius.circular(12),
-            border: Border.all(color: const Color(0xFFFF304D))),
-          child: FittedBox(fit: BoxFit.scaleDown, child: RichText(text: TextSpan(children: [
-            TextSpan(text: '${coach.detailRating}', style: const TextStyle(color: _gold, fontSize: 30, fontWeight: FontWeight.w900)),
-            const TextSpan(text: '  قدرت کلی', style: TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.bold)),
-          ]))),
-        ),
-        const SizedBox(height: 10),
-        _detailBox('ویژگی‌های مربی:', coach.detailFeatures),
-        const SizedBox(height: 9),
-        _detailBox('قیمت:', [_money(coach.price)], price: true),
-        const Spacer(),
-        SizedBox(width: double.infinity, height: 53, child: ElevatedButton(
-          onPressed: loading || saving || hired ? null : onHire,
-          style: ElevatedButton.styleFrom(
-            backgroundColor: const Color(0xFFB90022),
-            disabledBackgroundColor: const Color(0xFF3B1A24),
-            foregroundColor: Colors.white,
-            disabledForegroundColor: Colors.white70,
-            side: const BorderSide(color: Color(0xFFFFA4B3), width: 2),
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
-            elevation: 9,
-            shadowColor: const Color(0xFFFF1744),
+          const SizedBox(width: 10),
+          Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, mainAxisSize: MainAxisSize.min, children: [
+            Text(coach.name, maxLines: 1, overflow: TextOverflow.ellipsis,
+              style: const TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.w900)),
+            const SizedBox(height: 4),
+            Wrap(crossAxisAlignment: WrapCrossAlignment.center, spacing: 5, children: [
+              Text('${coach.detailRating}', style: const TextStyle(color: _gold, fontSize: 22, fontWeight: FontWeight.w900)),
+              const Text('قدرت کلی', style: TextStyle(color: Colors.white, fontSize: 12, fontWeight: FontWeight.bold)),
+              const SizedBox(width: 5),
+              const Icon(Icons.monetization_on, color: _gold, size: 16),
+              Text(_money(coach.price), style: const TextStyle(color: _gold, fontSize: 13, fontWeight: FontWeight.w900)),
+            ]),
+            const SizedBox(height: 3),
+            Text('ویژگی‌ها: ${coach.detailFeatures.join(' • ')}', maxLines: 2, overflow: TextOverflow.ellipsis,
+              style: const TextStyle(color: Colors.white, fontFamily: 'Vazirmatn', fontSize: 11, fontWeight: FontWeight.w700)),
+          ])),
+          const SizedBox(width: 9),
+          SizedBox(
+            width: compact ? 90 : 125,
+            height: 42,
+            child: ElevatedButton(
+              onPressed: loading || saving || hired ? null : onHire,
+              style: ElevatedButton.styleFrom(
+                backgroundColor: const Color(0xFFB90022),
+                disabledBackgroundColor: const Color(0xFF3B1A24),
+                foregroundColor: Colors.white,
+                disabledForegroundColor: Colors.white70,
+                side: const BorderSide(color: Color(0xFFFFA4B3), width: 1.5),
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(11)),
+                padding: const EdgeInsets.symmetric(horizontal: 4),
+              ),
+              child: saving
+                ? const SizedBox(width: 18, height: 18, child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white))
+                : Text(hired ? 'انتخاب‌شده' : 'خرید مربی', textAlign: TextAlign.center,
+                    style: const TextStyle(fontFamily: 'Vazirmatn', fontSize: 12, fontWeight: FontWeight.w900)),
+            ),
           ),
-          child: saving
-            ? const SizedBox(width: 22, height: 22, child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white))
-            : Text(hired ? 'مربی انتخاب‌شده' : 'خرید مربی', style: const TextStyle(fontFamily: 'Vazirmatn', fontSize: 20, fontWeight: FontWeight.w900)),
-        )),
-      ]),
+        ]);
+      }),
     );
   }
-
-  Widget _detailBox(String title, List<String> lines, {bool price = false}) => Container(
-    width: double.infinity,
-    padding: const EdgeInsets.symmetric(horizontal: 9, vertical: 8),
-    decoration: BoxDecoration(color: const Color(0xFF041329), borderRadius: BorderRadius.circular(12),
-      border: Border.all(color: const Color(0xFF167DFF), width: 1)),
-    child: Column(children: [
-      Text(title, textAlign: TextAlign.center, style: const TextStyle(color: _gold, fontSize: 16, fontWeight: FontWeight.w900)),
-      const SizedBox(height: 5),
-      ...lines.map((line) => Padding(padding: const EdgeInsets.symmetric(vertical: 2), child: price
-        ? Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-            const Icon(Icons.monetization_on, color: _gold, size: 22),
-            const SizedBox(width: 6),
-            Text(line, style: const TextStyle(color: _gold, fontSize: 19, fontWeight: FontWeight.w900)),
-          ])
-        : Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-            const Icon(Icons.circle, color: _gold, size: 7),
-            const SizedBox(width: 7),
-            Flexible(child: Text(line, textAlign: TextAlign.center, style: const TextStyle(color: Colors.white, fontFamily: 'Vazirmatn', fontSize: 14, fontWeight: FontWeight.bold))),
-          ]))),
-    ]),
-  );
 }
 
 class _ShopBackground extends StatelessWidget {
