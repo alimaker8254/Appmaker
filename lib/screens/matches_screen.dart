@@ -147,6 +147,9 @@ class _MatchesScreenState extends State<MatchesScreen> {
       onAcceptWithDetails: (details) => _movePlayer(details.data, slot),
       builder: (context, candidates, rejected) => Draggable<_PlayerDragData>(
         data: slot,
+        // Bench cards only respond to vertical drags, leaving horizontal
+        // gestures to the bench ListView for normal scrolling.
+        axis: slot.isBench ? Axis.vertical : null,
         maxSimultaneousDrags: 1,
         feedback: Material(
           color: Colors.transparent,
