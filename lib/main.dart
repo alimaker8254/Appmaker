@@ -123,25 +123,37 @@ class _TeamSelectionScreenState extends State<TeamSelectionScreen> {
                   )),
                 )),
                 SizedBox(height: compact ? 7 : 12),
-                Expanded(child: GridView.builder(
-                  padding: EdgeInsets.only(top: 3, bottom: compact ? 5 : 8),
-                  physics: const NeverScrollableScrollPhysics(),
-                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 5, mainAxisSpacing: gap, crossAxisSpacing: gap,
-                    childAspectRatio: compact ? 1.35 : 1.39,
-                  ),
-                  itemCount: clubs.length,
-                  itemBuilder: (context, visualIndex) {
-                    // RTL grid: reverse data so City is at the far left as in the reference.
-                    final index = clubs.length - visualIndex - 1;
-                    return GestureDetector(
-                      onTap: () => setState(() => selected = index),
-                      child: _TeamSelectionCard(
-                        club: clubs[index],
-                        displayName: _clubDisplayNames[index],
-                        selected: selected == index,
-                        compact: compact,
+                Expanded(child: LayoutBuilder(
+                  builder: (context, gridConstraints) {
+                    // Fit all 15 clubs in exactly three visible rows on every
+                    // landscape screen; the non-scrollable grid must never clip
+                    // the final five teams on shorter displays.
+                    final bottomPadding = compact ? 5.0 : 8.0;
+                    final tileWidth = (gridConstraints.maxWidth - gap * 4) / 5;
+                    final tileHeight = (gridConstraints.maxHeight - 3 - bottomPadding - gap * 2) / 3;
+                    return GridView.builder(
+                      padding: EdgeInsets.only(top: 3, bottom: bottomPadding),
+                      physics: const NeverScrollableScrollPhysics(),
+                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                        crossAxisCount: 5,
+                        mainAxisSpacing: gap,
+                        crossAxisSpacing: gap,
+                        childAspectRatio: tileWidth / tileHeight,
                       ),
+                      itemCount: clubs.length,
+                      itemBuilder: (context, visualIndex) {
+                        // RTL grid: reverse data so City is at the far left as in the reference.
+                        final index = clubs.length - visualIndex - 1;
+                        return GestureDetector(
+                          onTap: () => setState(() => selected = index),
+                          child: _TeamSelectionCard(
+                            club: clubs[index],
+                            displayName: _clubDisplayNames[index],
+                            selected: selected == index,
+                            compact: compact,
+                          ),
+                        );
+                      },
                     );
                   },
                 )),
