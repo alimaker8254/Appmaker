@@ -80,7 +80,7 @@ class _LoadingScreenState extends State<LoadingScreen>
           );
         }
       });
-    _progress.forward();
+    _progress.forward(from: 0);
   }
 
   @override
@@ -105,45 +105,81 @@ class _LoadingScreenState extends State<LoadingScreen>
           Positioned(
             left: 52,
             right: 52,
-            bottom: 26,
+            bottom: 22,
             child: AnimatedBuilder(
               animation: _progress,
               builder: (context, child) {
-                return Container(
-                  height: 10,
-                  decoration: BoxDecoration(
-                    color: const Color(0xFF07102B).withOpacity(.9),
-                    borderRadius: BorderRadius.circular(20),
-                    border: Border.all(
-                      color: const Color(0xFF35CFFF),
-                      width: 1.5,
-                    ),
-                    boxShadow: [
-                      BoxShadow(
-                        color: const Color(0xFF00AFFF).withOpacity(.65),
-                        blurRadius: 12,
-                        spreadRadius: 1,
+                return Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    ClipRRect(
+                      borderRadius: BorderRadius.circular(20),
+                      child: LayoutBuilder(
+                        builder: (context, constraints) {
+                          return Container(
+                            width: double.infinity,
+                            height: 13,
+                            decoration: BoxDecoration(
+                              color: const Color(0xFF101321),
+                              border: Border.all(
+                                color: const Color(0xFFFFE36A),
+                                width: 1.4,
+                              ),
+                              borderRadius: BorderRadius.circular(20),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: const Color(0xFFFFD400).withOpacity(.7),
+                                  blurRadius: 13,
+                                  spreadRadius: 1,
+                                ),
+                              ],
+                            ),
+                            child: Align(
+                              alignment: Alignment.centerLeft,
+                              child: Container(
+                                width: constraints.maxWidth * _progress.value,
+                                decoration: const BoxDecoration(
+                                  gradient: LinearGradient(
+                                    begin: Alignment.centerLeft,
+                                    end: Alignment.centerRight,
+                                    colors: [
+                                      Color(0xFFFFA800),
+                                      Color(0xFFFFD000),
+                                      Color(0xFFFFFF72),
+                                    ],
+                                  ),
+                                  borderRadius: BorderRadius.all(
+                                    Radius.circular(20),
+                                  ),
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color: Color(0xFFFFD700),
+                                      blurRadius: 7,
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          );
+                        },
                       ),
-                    ],
-                  ),
-                  clipBehavior: Clip.antiAlias,
-                  child: Align(
-                    alignment: Alignment.centerLeft,
-                    child: FractionallySizedBox(
-                      widthFactor: _progress.value,
-                      child: DecoratedBox(
-                        decoration: const BoxDecoration(
-                          gradient: LinearGradient(
-                            colors: [
-                              Color(0xFF087BFF),
-                              Color(0xFF00D9FF),
-                              Color(0xFF36F2A5),
-                            ],
-                          ),
-                        ),
+                    ),
+                    const SizedBox(height: 7),
+                    const Text(
+                      'LOADING...',
+                      textDirection: TextDirection.ltr,
+                      style: TextStyle(
+                        color: Color(0xFFFFD700),
+                        fontSize: 13,
+                        fontWeight: FontWeight.w900,
+                        letterSpacing: 3,
+                        shadows: [
+                          Shadow(color: Color(0xFFFFC400), blurRadius: 9),
+                          Shadow(color: Colors.black87, blurRadius: 3),
+                        ],
                       ),
                     ),
-                  ),
+                  ],
                 );
               },
             ),
