@@ -43,7 +43,7 @@ class _TacticsScreenState extends State<TacticsScreen> {
       final d=jsonDecode(raw) as Map<String,dynamic>;
       if(!mounted)return;
       setState((){
-        style=((d['style'] as num?)?.toInt() ?? 7).clamp(0,7);
+        style=((d['style'] as num?)?.toInt() ?? 7).clamp(0,7).toInt();
         final a=d['team'];
         team=a is List && a.length==8 ? a.map((v)=>(v as num).toDouble().clamp(0,100).toDouble()).toList() : styles[style].values.map((v)=>v.toDouble()).toList();
         if(d['toggles'] is Map){for(final k in toggles.keys){if(d['toggles'][k] is bool)toggles[k]=d['toggles'][k];}}
@@ -104,7 +104,7 @@ class _TacticsScreenState extends State<TacticsScreen> {
     const SizedBox(height:4),
     Expanded(flex:5,child:GridView.builder(physics:const NeverScrollableScrollPhysics(),itemCount:8,
       gridDelegate:const SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount:4,crossAxisSpacing:5,mainAxisSpacing:5,childAspectRatio:1.45),
-      itemBuilder:(context,i){final s=styles[i],active=i==style;return InkWell(onTap:()=>setState(()=>{style=i,team=s.values.map((v)=>v.toDouble()).toList()}),child:Container(
+      itemBuilder:(context,i){final s=styles[i],active=i==style;return InkWell(onTap:()=>setState(() { style=i; team=s.values.map((v)=>v.toDouble()).toList(); }),child:Container(
         padding:const EdgeInsets.all(3),decoration:BoxDecoration(gradient:const LinearGradient(colors:[Color(0xFF0A2B42),Color(0xFF04111E)]),borderRadius:BorderRadius.circular(11),border:Border.all(color:active?green:const Color(0xFF168CB2),width:active?2.5:1.2),boxShadow:active?[BoxShadow(color:green.withOpacity(.6),blurRadius:10)]:[]),
         child:Column(mainAxisAlignment:MainAxisAlignment.center,children:[Icon(s.icon,color:Colors.white,size:20),FittedBox(child:Text(s.fa,style:const TextStyle(color:Colors.white,fontSize:10,fontWeight:FontWeight.bold))),FittedBox(child:Text(s.en,textDirection:TextDirection.ltr,style:const TextStyle(color:Colors.white70,fontSize:8)))]),
       ));},
