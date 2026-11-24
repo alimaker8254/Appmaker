@@ -154,9 +154,7 @@ class _MatchesScreenState extends State<MatchesScreen> {
       onAcceptWithDetails: (details) => _movePlayer(details.data, slot),
       builder: (context, candidates, rejected) => Draggable<_PlayerDragData>(
         data: slot,
-        // Bench cards only respond to vertical drags, leaving horizontal
-        // gestures to the bench ListView for normal scrolling.
-        axis: slot.isBench ? Axis.vertical : null,
+        // Allow bench players to be dragged freely in every direction.
         maxSimultaneousDrags: 1,
         feedback: Material(
           color: Colors.transparent,
@@ -233,7 +231,9 @@ class _MatchesScreenState extends State<MatchesScreen> {
             colors: [Color(0xFF087A20), Color(0xFF034312), Color(0xFF010B04)]),
         ),
         child: SafeArea(
-          child: LayoutBuilder(builder: (context, constraints) {
+          child: Stack(
+            children: [
+              LayoutBuilder(builder: (context, constraints) {
             final w = constraints.maxWidth;
             final h = constraints.maxHeight;
             final compact = h < 500;
@@ -278,22 +278,7 @@ class _MatchesScreenState extends State<MatchesScreen> {
                     padding: EdgeInsets.symmetric(horizontal: compact ? 7 : 14, vertical: compact ? 4 : 8),
                     child: Row(
                       children: [
-                        Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            GestureDetector(
-                              onTap: () => Navigator.of(context).maybePop(),
-                              child: const SizedBox(
-                                width: 40,
-                                height: 28,
-                                child: Icon(Icons.arrow_back, color: Color(0xFF168BFF), size: 27),
-                              ),
-                            ),
-                            const SizedBox(height: 7),
-                            _StartControl(compact: compact),
-                          ],
-                        ),
+                        Center(child: _StartControl(compact: compact)),
                         SizedBox(width: compact ? 7 : 12),
                         Expanded(
                           child: Container(
@@ -307,7 +292,8 @@ class _MatchesScreenState extends State<MatchesScreen> {
                             ),
                             child: ListView.separated(
                               controller: _benchScrollController,
-                              physics: const ClampingScrollPhysics(),
+                              // Scrolling is controlled by the vertical scrollbar beside the bench.
+              physics: const NeverScrollableScrollPhysics(),
                               scrollDirection: Axis.horizontal,
                               reverse: true,
                               itemCount: _benchPlayers.length,
@@ -345,6 +331,29 @@ class _MatchesScreenState extends State<MatchesScreen> {
               ],
             );
           }),
+              Positioned(
+                top: 5,
+                right: 10,
+                child: GestureDetector(
+                  onTap: () => Navigator.of(context).maybePop(),
+                  child: Container(
+                    width: 52,
+                    height: 52,
+                    alignment: Alignment.center,
+                    decoration: BoxDecoration(
+                      color: const Color(0xAA031A35),
+                      shape: BoxShape.circle,
+                      border: Border.all(color: const Color(0xFF168BFF), width: 1.8),
+                      boxShadow: const [
+                        BoxShadow(color: Color(0x9900AFFF), blurRadius: 12, spreadRadius: 1),
+                      ],
+                    ),
+                    child: const Icon(Icons.arrow_back, color: Color(0xFF168BFF), size: 38),
+                  ),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
