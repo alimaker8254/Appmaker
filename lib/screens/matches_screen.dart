@@ -86,6 +86,81 @@ class _MatchesScreenState extends State<MatchesScreen> {
   ];
 
   late _Formation _selected = _formations.first;
+  late List<List<_SquadPlayer>> _lineup = _copyLines(_selected.lines);
+  late List<_SquadPlayer> _benchPlayers = _availableBench(_selected, const []);
+
+  static List<List<_SquadPlayer>> _copyLines(List<List<_SquadPlayer>> lines) =>
+      lines.map((line) => List<_SquadPlayer>.from(line)).toList();
+
+  List<_SquadPlayer> _availableBench(_Formation formation, List<_SquadPlayer> extra) {
+    final starters = formation.lines.expand((line) => line).map((p) => p.name).toSet();
+    final result = <_SquadPlayer>[];
+    for (final player in [..._bench, ...extra]) {
+      if (!starters.contains(player.name) && !result.any((p) => p.name == player.name)) {
+        result.add(player);
+      }
+    }
+    return result;
+  }
+
+  void _movePlayer(_PlayerDragData source, _PlayerDragData target) {
+    if (source.isBench == target.isBench &&
+        source.row == target.row && source.index == target.index) return;
+    setState(() {
+      final sourcePlayer = source.isBench
+          ? _benchPlayers[source.index]
+          : _lineup[source.row][source.index];
+      final targetPlayer = target.isBench
+          ? _benchPlayers[target.index]
+          : _lineup[target.row][target.index];
+
+      if (source.isBench) {
+        _benchPlayers[source.index] = targetPlayer;
+      } else if (target.isBench) {
+        _benchPlayers[target.index] = sourcePlayer;
+      } else {
+        _lineup[source.row][source.index] = targetPlayer;
+      }
+
+      if (target.isBench) {
+        _benchPlayers[target.index] = sourcePlayer;
+      } else {
+        _lineup[target.row][target.index] = sourcePlayer;
+      }
+    });
+  }
+
+  Widget _draggablePlayerCard({
+    required _SquadPlayer player,
+    required _PlayerDragData slot,
+    required double width,
+    required double height,
+    required bool compact,
+  }) {
+    final card = SizedBox(
+      width: width,
+      height: height,
+      child: _SquadCard(player: player, compact: compact, showPosition: true),
+    );
+    return DragTarget<_PlayerDragData>(
+      onWillAcceptWithDetails: (details) => true,
+      onAcceptWithDetails: (details) => _movePlayer(details.data, slot),
+      builder: (context, candidates, rejected) => Draggable<_PlayerDragData>(
+        data: slot,
+        maxSimultaneousDrags: 1,
+        feedback: Material(
+          color: Colors.transparent,
+          child: SizedBox(
+            width: width,
+            height: height,
+            child: _SquadCard(player: player, compact: compact, showPosition: true),
+          ),
+        ),
+        childWhenDragging: Opacity(opacity: .35, child: card),
+        child: card,
+      ),
+    );
+  }
 
   Future<void> _chooseFormation() async {
     final choice = await showDialog<_Formation>(
@@ -128,7 +203,14 @@ class _MatchesScreenState extends State<MatchesScreen> {
         ),
       ),
     );
-    if (choice != null && mounted) setState(() => _selected = choice);
+    if (choice != null && mounted) {
+      setState(() {
+        final previousPlayers = _lineup.expand((line) => line).toList();
+        _selected = choice;
+        _lineup = _copyLines(choice.lines);
+        _benchPlayers = _availableBench(choice, previousPlayers);
+      });
+    }
   }
 
   @override
@@ -162,17 +244,19 @@ class _MatchesScreenState extends State<MatchesScreen> {
                     clipBehavior: Clip.hardEdge,
                     children: [
                       Positioned.fill(child: CustomPaint(painter: _PitchPainter())),
-                      for (var row = 0; row < _selected.lines.length; row++)
-                        for (var col = 0; col < _selected.lines[row].length; col++)
+                      for (var row = 0; row < _lineup.length; row++)
+                        for (var col = 0; col < _lineup[row].length; col++)
                           Positioned(
                             left: _xForIndex(col, _selected.lines[row].length, w) - cardWidth / 2,
                             top: fieldHeight * _rowY(row, _selected.lines.length) - cardHeight / 2,
                             width: cardWidth,
                             height: cardHeight,
-                            child: _SquadCard(
-                              player: _selected.lines[row][col],
+                            child: _draggablePlayerCard(
+                              player: _lineup[row][col],
+                              slot: _PlayerDragData(isBench: false, row: row, index: col),
+                              width: cardWidth,
+                              height: cardHeight,
                               compact: compact,
-                              showPosition: true,
                             ),
                           ),
                     ],
@@ -199,12 +283,19 @@ class _MatchesScreenState extends State<MatchesScreen> {
                             child: ListView.separated(
                               scrollDirection: Axis.horizontal,
                               reverse: true,
-                              itemCount: _bench.length,
+                              itemCount: _benchPlayers.length,
                               separatorBuilder: (_, __) => SizedBox(width: compact ? 6 : 10),
-                              itemBuilder: (context, index) => SizedBox(
-                                width: (w * .105).clamp(112.0, 140.0).toDouble(),
-                                child: _SquadCard(player: _bench[index], compact: false, showPosition: true),
-                              ),
+                              itemBuilder: (context, index) {
+                                final benchWidth = (w * .105).clamp(112.0, 140.0).toDouble();
+                                final benchHeight = controlHeight - (compact ? 8 : 14);
+                                return _draggablePlayerCard(
+                                  player: _benchPlayers[index],
+                                  slot: _PlayerDragData(isBench: true, row: 0, index: index),
+                                  width: benchWidth,
+                                  height: benchHeight,
+                                  compact: false,
+                                );
+                              },
                             ),
                           ),
                         ),
@@ -256,6 +347,13 @@ class _MatchesScreenState extends State<MatchesScreen> {
     final positions = centers[count] ?? centers[5]!;
     return width * positions[index];
   }
+}
+
+class _PlayerDragData {
+  final bool isBench;
+  final int row;
+  final int index;
+  const _PlayerDragData({required this.isBench, required this.row, required this.index});
 }
 
 class _Formation {
