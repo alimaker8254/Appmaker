@@ -100,39 +100,82 @@ class _TeamSelectionScreenState extends State<TeamSelectionScreen> {
             child: Padding(
               padding: EdgeInsets.symmetric(horizontal: width * .035),
               child: Column(children: [
-                SizedBox(height: compact ? 5 : 9),
-                Center(child: Container(
-                  width: width * .55,
-                  height: compact ? 66 : 82,
-                  alignment: Alignment.center,
-                  decoration: BoxDecoration(
-                    color: const Color(0xFF07102B).withOpacity(.9),
-                    borderRadius: BorderRadius.circular(48),
-                    border: Border.all(color: const Color(0xFF00BFFF), width: compact ? 2 : 3),
-                    boxShadow: [
-                      BoxShadow(color: const Color(0xFF006BFF).withOpacity(.85), blurRadius: 18, spreadRadius: 2),
-                      BoxShadow(color: const Color(0xFF00D9FF).withOpacity(.5), blurRadius: 34, spreadRadius: 4),
+                SizedBox(height: compact ? 4 : 7),
+                SizedBox(
+                  height: compact ? 58 : 70,
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: Container(
+                          height: compact ? 52 : 64,
+                          alignment: Alignment.center,
+                          decoration: BoxDecoration(
+                            color: const Color(0xFF07102B).withOpacity(.9),
+                            borderRadius: BorderRadius.circular(42),
+                            border: Border.all(color: const Color(0xFF00BFFF), width: compact ? 2 : 3),
+                            boxShadow: [
+                              BoxShadow(color: const Color(0xFF006BFF).withOpacity(.8), blurRadius: 15, spreadRadius: 1),
+                              BoxShadow(color: const Color(0xFF00D9FF).withOpacity(.45), blurRadius: 25, spreadRadius: 2),
+                            ],
+                          ),
+                          child: FittedBox(fit: BoxFit.scaleDown, child: Padding(
+                            padding: EdgeInsets.symmetric(horizontal: compact ? 10 : 18),
+                            child: Text(
+                              'لطفا یک تیم را انتخاب کنید',
+                              textDirection: TextDirection.rtl,
+                              style: TextStyle(fontFamily: 'Vazirmatn', color: Colors.white,
+                                fontSize: compact ? 23 : 31, fontWeight: FontWeight.w900,
+                                shadows: const [Shadow(color: Color(0xFF58BFFF), blurRadius: 12)]),
+                            ),
+                          )),
+                        ),
+                      ),
+                      SizedBox(width: compact ? 10 : 16),
+                      SizedBox(
+                        width: compact ? 150 : 205,
+                        height: compact ? 52 : 64,
+                        child: DecoratedBox(
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(42),
+                            boxShadow: [
+                              BoxShadow(color: const Color(0xFF006BFF).withOpacity(.8), blurRadius: 15, spreadRadius: 1),
+                              BoxShadow(color: const Color(0xFF00D9FF).withOpacity(.4), blurRadius: 25, spreadRadius: 2),
+                            ],
+                          ),
+                          child: OutlinedButton(
+                            onPressed: selected < 0 ? null : () => Navigator.push(
+                              context, MaterialPageRoute(builder: (_) => HomeScreen(club: clubs[selected])),
+                            ),
+                            style: OutlinedButton.styleFrom(
+                              backgroundColor: const Color(0xFF07102B), foregroundColor: Colors.white,
+                              disabledForegroundColor: Colors.white70,
+                              side: const BorderSide(color: Color(0xFF00BFFF), width: 3),
+                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(42)),
+                              padding: EdgeInsets.symmetric(horizontal: compact ? 10 : 18),
+                            ),
+                            child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+                              Icon(Icons.check, size: compact ? 27 : 34, color: Colors.white),
+                              SizedBox(width: compact ? 7 : 10),
+                              Text('تأیید', style: TextStyle(fontFamily: 'Vazirmatn',
+                                fontSize: compact ? 21 : 27, fontWeight: FontWeight.w900, color: Colors.white)),
+                            ]),
+                          ),
+                        ),
+                      ),
                     ],
                   ),
-                  child: FittedBox(fit: BoxFit.scaleDown, child: Text(
-                    'لطفا یک تیم را انتخاب کنید',
-                    textDirection: TextDirection.rtl,
-                    style: TextStyle(fontFamily: 'Vazirmatn', color: Colors.white,
-                      fontSize: compact ? 27 : 38, fontWeight: FontWeight.w900,
-                      shadows: const [Shadow(color: Color(0xFF58BFFF), blurRadius: 13)]),
-                  )),
-                )),
-                SizedBox(height: compact ? 7 : 12),
+                ),
+                SizedBox(height: compact ? 5 : 8),
                 Expanded(child: LayoutBuilder(
                   builder: (context, gridConstraints) {
                     // Fit all 15 clubs in exactly three visible rows on every
                     // landscape screen; the non-scrollable grid must never clip
                     // the final five teams on shorter displays.
-                    final bottomPadding = compact ? 5.0 : 8.0;
+                    final bottomPadding = compact ? 3.0 : 5.0;
                     final tileWidth = (gridConstraints.maxWidth - gap * 4) / 5;
                     final tileHeight = (gridConstraints.maxHeight - 3 - bottomPadding - gap * 2) / 3;
                     return GridView.builder(
-                      padding: EdgeInsets.only(top: 3, bottom: bottomPadding),
+                      padding: EdgeInsets.only(top: 2, bottom: bottomPadding),
                       physics: const NeverScrollableScrollPhysics(),
                       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                         crossAxisCount: 5,
@@ -157,39 +200,7 @@ class _TeamSelectionScreenState extends State<TeamSelectionScreen> {
                     );
                   },
                 )),
-                SizedBox(height: compact ? 82 : 104, child: Align(
-                  alignment: Alignment.centerRight,
-                  child: SizedBox(
-                    width: compact ? 245 : 325, height: compact ? 64 : 88,
-                    child: DecoratedBox(
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(48),
-                        boxShadow: [
-                          BoxShadow(color: const Color(0xFF006BFF).withOpacity(.85), blurRadius: 18, spreadRadius: 2),
-                          BoxShadow(color: const Color(0xFF00D9FF).withOpacity(.45), blurRadius: 32, spreadRadius: 3),
-                        ],
-                      ),
-                      child: OutlinedButton(
-                        onPressed: selected < 0 ? null : () => Navigator.push(
-                          context, MaterialPageRoute(builder: (_) => HomeScreen(club: clubs[selected])),
-                        ),
-                        style: OutlinedButton.styleFrom(
-                          backgroundColor: const Color(0xFF07102B), foregroundColor: Colors.white,
-                          disabledForegroundColor: Colors.white70,
-                          side: const BorderSide(color: Color(0xFF00BFFF), width: 3),
-                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(48)),
-                          padding: EdgeInsets.symmetric(horizontal: compact ? 20 : 30),
-                        ),
-                        child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-                          Icon(Icons.check, size: compact ? 34 : 49, color: Colors.white),
-                          SizedBox(width: compact ? 9 : 14),
-                          Text('تأیید', style: TextStyle(fontFamily: 'Vazirmatn',
-                            fontSize: compact ? 26 : 39, fontWeight: FontWeight.w900, color: Colors.white)),
-                        ]),
-                      ),
-                    ),
-                  ),
-                )),
+
               ]),
             ),
           ),
@@ -223,8 +234,8 @@ class _TeamSelectionCard extends StatelessWidget {
         ],
       ),
       child: Stack(children: [
-        Positioned(left: 7, right: 7, top: 5, bottom: compact ? 39 : 45,
-          child: Padding(padding: EdgeInsets.all(compact ? 5 : 8),
+        Positioned(left: 4, right: 4, top: 2, bottom: compact ? 34 : 39,
+          child: Padding(padding: EdgeInsets.all(compact ? 2 : 3),
             child: Image.asset(
               'assets/logos_png/' + club.asset.replaceAll('.svg', '.png'),
               fit: BoxFit.contain,
@@ -232,7 +243,7 @@ class _TeamSelectionCard extends StatelessWidget {
             ),
           ),
         ),
-        Positioned(left: 0, right: 0, bottom: 0, height: compact ? 39 : 45,
+        Positioned(left: 0, right: 0, bottom: 0, height: compact ? 34 : 39,
           child: Container(
             alignment: Alignment.center,
             decoration: BoxDecoration(
