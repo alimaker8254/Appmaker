@@ -231,7 +231,7 @@ class _CoachCard extends StatelessWidget {
                   style: const TextStyle(color: Colors.white, fontFamily: 'Vazirmatn', fontSize: 10, fontWeight: FontWeight.w700))),
               ]),
             )),
-            const Spacer(minFlex: 1),
+            const Spacer(),
             FittedBox(fit: BoxFit.scaleDown, child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
               const Icon(Icons.monetization_on, color: _gold, size: 19),
               const SizedBox(width: 4),
