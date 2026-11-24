@@ -88,6 +88,13 @@ class _MatchesScreenState extends State<MatchesScreen> {
   late _Formation _selected = _formations.first;
   late List<List<_SquadPlayer>> _lineup = _copyLines(_selected.lines);
   late List<_SquadPlayer> _benchPlayers = _availableBench(_selected, const []);
+  final ScrollController _benchScrollController = ScrollController();
+
+  @override
+  void dispose() {
+    _benchScrollController.dispose();
+    super.dispose();
+  }
 
   static List<List<_SquadPlayer>> _copyLines(List<List<_SquadPlayer>> lines) =>
       lines.map((line) => List<_SquadPlayer>.from(line)).toList();
@@ -278,11 +285,12 @@ class _MatchesScreenState extends State<MatchesScreen> {
                             GestureDetector(
                               onTap: () => Navigator.of(context).maybePop(),
                               child: const SizedBox(
-                                height: 16,
-                                child: Icon(Icons.arrow_back, color: Color(0xFF168BFF), size: 16),
+                                width: 40,
+                                height: 28,
+                                child: Icon(Icons.arrow_back, color: Color(0xFF168BFF), size: 27),
                               ),
                             ),
-                            const SizedBox(height: 1),
+                            const SizedBox(height: 7),
                             _StartControl(compact: compact),
                           ],
                         ),
@@ -298,6 +306,8 @@ class _MatchesScreenState extends State<MatchesScreen> {
                               boxShadow: [BoxShadow(color: const Color(0xFF39FF14).withOpacity(.48), blurRadius: 15, spreadRadius: 1)],
                             ),
                             child: ListView.separated(
+                              controller: _benchScrollController,
+                              physics: const ClampingScrollPhysics(),
                               scrollDirection: Axis.horizontal,
                               reverse: true,
                               itemCount: _benchPlayers.length,
@@ -317,6 +327,12 @@ class _MatchesScreenState extends State<MatchesScreen> {
                           ),
                         ),
                         SizedBox(width: compact ? 7 : 12),
+                        _BenchVerticalScroller(
+                          controller: _benchScrollController,
+                          height: controlHeight - (compact ? 8 : 16),
+                          width: 12,
+                        ),
+                        SizedBox(width: compact ? 5 : 8),
                         _FormationControl(
                           label: _selected.name,
                           compact: compact,
@@ -363,6 +379,108 @@ class _MatchesScreenState extends State<MatchesScreen> {
     };
     final positions = centers[count] ?? centers[5]!;
     return width * positions[index];
+  }
+}
+
+
+class _BenchVerticalScroller extends StatefulWidget {
+  final ScrollController controller;
+  final double height;
+  final double width;
+
+  const _BenchVerticalScroller({
+    required this.controller,
+    required this.height,
+    required this.width,
+  });
+
+  @override
+  State<_BenchVerticalScroller> createState() => _BenchVerticalScrollerState();
+}
+
+class _BenchVerticalScrollerState extends State<_BenchVerticalScroller> {
+  double _dragOffset = 0;
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      width: widget.width,
+      height: widget.height,
+      child: LayoutBuilder(
+        builder: (context, constraints) {
+          final trackHeight = constraints.maxHeight;
+          final hasScroll = widget.controller.hasClients &&
+              widget.controller.position.maxScrollExtent > 0;
+          final position = hasScroll ? widget.controller.position : null;
+          final viewport = position?.viewportDimension ?? 0;
+          final content = viewport + (position?.maxScrollExtent ?? 0);
+          final thumbHeight = hasScroll
+              ? (trackHeight * viewport / content).clamp(24.0, trackHeight)
+              : trackHeight;
+          final maxThumbTravel = (trackHeight - thumbHeight).clamp(0.0, trackHeight);
+          final maxScroll = position?.maxScrollExtent ?? 0;
+          final currentOffset = position?.pixels ?? 0;
+          final thumbTop = maxScroll > 0
+              ? (currentOffset / maxScroll * maxThumbTravel).clamp(0.0, maxThumbTravel)
+              : 0.0;
+
+          void updateFromLocalY(double localY) {
+            if (!widget.controller.hasClients) return;
+            final p = widget.controller.position;
+            final available = (trackHeight - thumbHeight).clamp(0.0, trackHeight);
+            if (available <= 0 || p.maxScrollExtent <= 0) return;
+            final top = (localY - _dragOffset).clamp(0.0, available);
+            widget.controller.jumpTo(top / available * p.maxScrollExtent);
+          }
+
+          return GestureDetector(
+            behavior: HitTestBehavior.translucent,
+            onVerticalDragStart: (details) {
+              _dragOffset = details.localPosition.dy - thumbTop;
+              if (_dragOffset < 0 || _dragOffset > thumbHeight) {
+                _dragOffset = thumbHeight / 2;
+                updateFromLocalY(details.localPosition.dy);
+              }
+            },
+            onVerticalDragUpdate: (details) {
+              updateFromLocalY(details.localPosition.dy);
+            },
+            child: Stack(
+              alignment: Alignment.center,
+              children: [
+                Container(
+                  width: 4,
+                  decoration: BoxDecoration(
+                    color: const Color(0xFF0A3550),
+                    borderRadius: BorderRadius.circular(8),
+                    border: Border.all(color: const Color(0xFF087DBB), width: .7),
+                  ),
+                ),
+                Positioned(
+                  top: thumbTop,
+                  child: Container(
+                    width: widget.width,
+                    height: thumbHeight,
+                    decoration: BoxDecoration(
+                      gradient: const LinearGradient(
+                        begin: Alignment.centerLeft,
+                        end: Alignment.centerRight,
+                        colors: [Color(0xFF087DFF), Color(0xFF00DFFF)],
+                      ),
+                      borderRadius: BorderRadius.circular(10),
+                      border: Border.all(color: const Color(0xFF8CEBFF), width: 1),
+                      boxShadow: const [
+                        BoxShadow(color: Color(0x9900BFFF), blurRadius: 7, spreadRadius: 1),
+                      ],
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          );
+        },
+      ),
+    );
   }
 }
 
