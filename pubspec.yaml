@@ -21,6 +21,7 @@ flutter:
   uses-material-design: true
   assets:
     - assets/loading_screen.png
+    - assets/home_screen.png
     - assets/logos/
     - assets/logos_png/
     - assets/audio/
